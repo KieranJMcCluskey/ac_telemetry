@@ -1,0 +1,10 @@
+{
+  "mode": "byok",
+  "apiKey": "",
+  "backendUrl": "",
+  "account": {
+    "email": "",
+    "accessToken": "",
+    "refreshToken": ""
+  }
+}

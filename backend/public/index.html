@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AC Dashboard — Coaching Tokens</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<style>
+:root {
+  --bg:#0a0a0c; --bg2:#111115; --bg3:#16161c; --bg4:#1e1e26;
+  --border:rgba(255,255,255,0.07); --border2:rgba(255,255,255,0.12);
+  --accent:#e8373e; --text:#f0f0f4; --muted:#6b6b7a; --green:#22c55e;
+  --purple:#a855f7; --gold:#d4af37;
+  --font-display:'Rajdhani',sans-serif; --font-mono:'JetBrains Mono',monospace; --font-body:'Inter',sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-size:14px;line-height:1.6;min-height:100vh;display:flex;flex-direction:column}
+a{color:var(--accent);text-decoration:none}
+
+/* NAV */
+nav{display:flex;align-items:center;justify-content:space-between;padding:0 32px;height:56px;border-bottom:1px solid var(--border);background:var(--bg)}
+.logo{font-family:var(--font-display);font-size:24px;font-weight:700;letter-spacing:.08em}
+.logo span{color:var(--accent)}
+#navUser{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:12px}
+.nav-balance{font-family:var(--font-mono);font-size:13px;color:var(--purple)}
+.btn-sm{background:var(--bg3);border:1px solid var(--border2);color:var(--text);padding:5px 12px;border-radius:4px;font-size:12px;cursor:pointer;transition:.15s}
+.btn-sm:hover{border-color:var(--accent);color:var(--accent)}
+
+/* HERO */
+.hero{text-align:center;padding:80px 24px 60px;background:linear-gradient(180deg,rgba(168,85,247,.05) 0%,transparent 100%)}
+.hero h1{font-family:var(--font-display);font-size:48px;font-weight:700;letter-spacing:.04em;margin-bottom:12px}
+.hero h1 span{color:var(--accent)}
+.hero p{font-size:16px;color:var(--muted);max-width:500px;margin:0 auto 32px;line-height:1.7}
+
+/* PRICING */
+.pricing{display:flex;gap:20px;justify-content:center;padding:0 24px 80px;flex-wrap:wrap}
+.plan{background:var(--bg2);border:1px solid var(--border2);border-radius:12px;padding:32px;width:280px;text-align:center;position:relative;transition:.2s}
+.plan:hover{border-color:var(--purple);transform:translateY(-2px)}
+.plan.popular{border-color:var(--purple);box-shadow:0 0 40px rgba(168,85,247,.15)}
+.popular-badge{position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:var(--purple);color:#fff;font-size:11px;font-weight:700;letter-spacing:1px;padding:3px 12px;border-radius:20px;text-transform:uppercase}
+.plan-tokens{font-family:var(--font-display);font-size:52px;font-weight:700;color:var(--text);line-height:1}
+.plan-unit{font-size:14px;color:var(--muted);margin:4px 0 20px}
+.plan-price{font-family:var(--font-mono);font-size:28px;font-weight:500;color:var(--accent);margin-bottom:8px}
+.plan-per{font-size:12px;color:var(--muted);margin-bottom:24px}
+.plan ul{list-style:none;text-align:left;margin-bottom:28px}
+.plan ul li{font-size:13px;color:var(--muted);padding:4px 0;display:flex;gap:8px;align-items:flex-start}
+.plan ul li::before{content:'✓';color:var(--green);flex-shrink:0;margin-top:1px}
+.btn-buy{width:100%;padding:12px;background:linear-gradient(135deg,#6d28d9,var(--purple));border:none;color:#fff;font-family:var(--font-display);font-size:15px;font-weight:700;letter-spacing:.5px;border-radius:8px;cursor:pointer;transition:.15s}
+.btn-buy:hover{opacity:.85}
+.btn-buy:disabled{opacity:.45;cursor:not-allowed}
+
+/* AUTH MODAL */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.7);display:flex;align-items:center;justify-content:center;z-index:100;backdrop-filter:blur(4px)}
+.modal-bg.hidden{display:none}
+.modal{background:var(--bg2);border:1px solid var(--border2);border-radius:12px;padding:32px;width:380px;max-width:90vw}
+.modal h2{font-family:var(--font-display);font-size:22px;font-weight:700;margin-bottom:20px}
+.modal-tabs{display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:20px}
+.modal-tab{padding:8px 16px;font-size:12px;font-family:var(--font-display);font-weight:600;letter-spacing:.06em;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:.15s;background:none;border-top:none;border-left:none;border-right:none}
+.modal-tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+.form-group{margin-bottom:14px}
+.form-group label{display:block;font-size:11px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px;font-family:var(--font-display);font-weight:600}
+.form-group input{width:100%;background:var(--bg3);border:1px solid var(--border2);color:var(--text);padding:9px 12px;border-radius:6px;font-size:13px;outline:none;transition:.15s}
+.form-group input:focus{border-color:var(--purple)}
+.btn-primary{width:100%;padding:11px;background:linear-gradient(135deg,#6d28d9,var(--purple));border:none;color:#fff;font-family:var(--font-display);font-size:14px;font-weight:700;letter-spacing:.5px;border-radius:6px;cursor:pointer;transition:.15s;margin-top:4px}
+.btn-primary:hover{opacity:.85}
+.btn-primary:disabled{opacity:.45;cursor:not-allowed}
+.modal-error{color:#f87171;font-size:12px;margin-top:10px}
+.modal-close{float:right;background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer;line-height:1}
+
+/* SUCCESS */
+.success-banner{display:none;background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.3);border-radius:8px;padding:16px 20px;text-align:center;margin:0 24px 32px;color:var(--green)}
+.success-banner.show{display:block}
+
+/* FOOTER */
+footer{margin-top:auto;padding:24px;text-align:center;border-top:1px solid var(--border);font-size:12px;color:var(--muted)}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">AC<span>.</span>COACH</div>
+  <div id="navUser">
+    <span id="navBalance" class="nav-balance" style="display:none"></span>
+    <span id="navEmail" style="display:none"></span>
+    <button class="btn-sm" id="navAuthBtn" onclick="openAuth()">Sign In</button>
+    <button class="btn-sm" id="navLogoutBtn" style="display:none" onclick="logout()">Sign Out</button>
+  </div>
+</nav>
+
+<div class="hero">
+  <h1>AI Driving Coach<br>for <span>Assetto Corsa</span></h1>
+  <p>Get personalized lap analysis powered by Claude AI. Real telemetry data, corner-by-corner coaching, no subscription.</p>
+</div>
+
+<div id="successBanner" class="success-banner">
+  Payment successful! Your coaching tokens have been added to your account.
+</div>
+
+<div class="pricing">
+  <div class="plan">
+    <div class="plan-tokens">10</div>
+    <div class="plan-unit">coaching sessions</div>
+    <div class="plan-price">$5</div>
+    <div class="plan-per">$0.50 per session</div>
+    <ul>
+      <li>Full lap-by-lap analysis</li>
+      <li>Corner-by-corner coaching</li>
+      <li>Braking &amp; throttle zones</li>
+      <li>Sector time breakdown</li>
+    </ul>
+    <button class="btn-buy" onclick="buyTokens('10')">Buy 10 Sessions</button>
+  </div>
+
+  <div class="plan popular">
+    <div class="popular-badge">Best Value</div>
+    <div class="plan-tokens">100</div>
+    <div class="plan-unit">coaching sessions</div>
+    <div class="plan-price">$45</div>
+    <div class="plan-per">$0.45 per session · save 10%</div>
+    <ul>
+      <li>Everything in Starter</li>
+      <li>Priority support</li>
+      <li>Never expires</li>
+      <li>Shareable between tracks</li>
+    </ul>
+    <button class="btn-buy" onclick="buyTokens('100')">Buy 100 Sessions</button>
+  </div>
+</div>
+
+<!-- Auth modal -->
+<div class="modal-bg hidden" id="authModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeAuth()">×</button>
+    <h2>Your Account</h2>
+    <div class="modal-tabs">
+      <button class="modal-tab active" onclick="switchTab('login')">Sign In</button>
+      <button class="modal-tab" onclick="switchTab('register')">Create Account</button>
+    </div>
+    <div id="tabLogin">
+      <div class="form-group"><label>Email</label><input type="email" id="loginEmail" placeholder="you@example.com"></div>
+      <div class="form-group"><label>Password</label><input type="password" id="loginPass" placeholder="••••••••"></div>
+      <button class="btn-primary" id="loginBtn" onclick="doLogin()">Sign In</button>
+      <div class="modal-error" id="loginError"></div>
+    </div>
+    <div id="tabRegister" style="display:none">
+      <div class="form-group"><label>Email</label><input type="email" id="regEmail" placeholder="you@example.com"></div>
+      <div class="form-group"><label>Password</label><input type="password" id="regPass" placeholder="Min. 8 characters"></div>
+      <button class="btn-primary" id="regBtn" onclick="doRegister()">Create Account</button>
+      <div class="modal-error" id="regError"></div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  AC Dashboard · AI Coaching Tokens · <a href="mailto:support@example.com">Support</a>
+</footer>
+
+<script>
+// Replace with your actual Supabase project URL and anon key
+const SUPABASE_URL = 'YOUR_SUPABASE_URL';
+const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
+const BACKEND_URL = window.location.origin;
+
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+let currentSession = null;
+
+async function init() {
+  const { data } = await sb.auth.getSession();
+  currentSession = data.session;
+  updateNav();
+
+  // Check for success redirect
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('session_id')) {
+    document.getElementById('successBanner').classList.add('show');
+    await refreshBalance();
+  }
+
+  sb.auth.onAuthStateChange((_event, session) => {
+    currentSession = session;
+    updateNav();
+  });
+}
+
+async function updateNav() {
+  const navEmail = document.getElementById('navEmail');
+  const navBalance = document.getElementById('navBalance');
+  const navAuthBtn = document.getElementById('navAuthBtn');
+  const navLogoutBtn = document.getElementById('navLogoutBtn');
+
+  if (currentSession?.user) {
+    navEmail.textContent = currentSession.user.email;
+    navEmail.style.display = '';
+    navAuthBtn.style.display = 'none';
+    navLogoutBtn.style.display = '';
+    await refreshBalance();
+  } else {
+    navEmail.style.display = 'none';
+    navBalance.style.display = 'none';
+    navAuthBtn.style.display = '';
+    navLogoutBtn.style.display = 'none';
+  }
+}
+
+async function refreshBalance() {
+  if (!currentSession?.access_token) return;
+  try {
+    const res = await fetch(`${BACKEND_URL}/.netlify/functions/tokens`, {
+      headers: { Authorization: `Bearer ${currentSession.access_token}` },
+    });
+    const data = await res.json();
+    const el = document.getElementById('navBalance');
+    el.textContent = `${data.balance} tokens`;
+    el.style.display = '';
+  } catch {}
+}
+
+async function buyTokens(pkg) {
+  if (!currentSession) { openAuth(); return; }
+  const btns = document.querySelectorAll('.btn-buy');
+  btns.forEach(b => b.disabled = true);
+  try {
+    const res = await fetch(`${BACKEND_URL}/.netlify/functions/checkout`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${currentSession.access_token}`,
+      },
+      body: JSON.stringify({ package: pkg }),
+    });
+    const data = await res.json();
+    if (data.url) window.location.href = data.url;
+    else alert(data.error || 'Checkout error');
+  } catch (e) {
+    alert('Network error: ' + e.message);
+  } finally {
+    btns.forEach(b => b.disabled = false);
+  }
+}
+
+function openAuth() { document.getElementById('authModal').classList.remove('hidden'); }
+function closeAuth() { document.getElementById('authModal').classList.add('hidden'); }
+
+function switchTab(tab) {
+  document.getElementById('tabLogin').style.display = tab === 'login' ? '' : 'none';
+  document.getElementById('tabRegister').style.display = tab === 'register' ? '' : 'none';
+  document.querySelectorAll('.modal-tab').forEach((t, i) => t.classList.toggle('active', (i === 0) === (tab === 'login')));
+}
+
+async function doLogin() {
+  const email = document.getElementById('loginEmail').value.trim();
+  const password = document.getElementById('loginPass').value;
+  const btn = document.getElementById('loginBtn');
+  const err = document.getElementById('loginError');
+  err.textContent = '';
+  btn.disabled = true;
+  try {
+    const { error } = await sb.auth.signInWithPassword({ email, password });
+    if (error) { err.textContent = error.message; return; }
+    closeAuth();
+  } finally { btn.disabled = false; }
+}
+
+async function doRegister() {
+  const email = document.getElementById('regEmail').value.trim();
+  const password = document.getElementById('regPass').value;
+  const btn = document.getElementById('regBtn');
+  const err = document.getElementById('regError');
+  err.textContent = '';
+  btn.disabled = true;
+  try {
+    const { error } = await sb.auth.signUp({ email, password });
+    if (error) { err.textContent = error.message; return; }
+    err.style.color = '#22c55e';
+    err.textContent = 'Check your email to confirm your account, then sign in.';
+  } finally { btn.disabled = false; }
+}
+
+async function logout() {
+  await sb.auth.signOut();
+}
+
+init();
+</script>
+</body>
+</html>

@@ -1,0 +1,22 @@
+TRACK: Suzuka Circuit, Japan — Japanese Grand Prix
+Length: 5.807 km | Turns: 18 | Character: technical masterpiece, figure-8, high-speed and technical sections
+
+KEY CORNERS (name, normalised position, type, typical gear, speed in → out):
+- T1-2 First corner    pos≈0.03  right-left complex 4th   300→200 km/h  [DRS zone, commitment]
+- S-curves (T3-7)      pos≈0.10  right-left esses   4th-5th 240-280 km/h [most technical sequence]
+- Degner 1 (T9)        pos≈0.28  fast right         4th   260→200 km/h  [crest before, semi-blind]
+- Degner 2 (T10)       pos≈0.33  tight right        3rd   200→130 km/h
+- Hairpin (T11)        pos≈0.38  180° hairpin       1st   330→60 km/h   [hardest braking, overtaking]
+- Spoon entry (T13)    pos≈0.50  double-apex right  3rd   260→170 km/h  [patience for exit]
+- Spoon exit (T14)     pos≈0.57  long right exit    4th   180→260 km/h  [exit speed = backstraight speed]
+- 130R (T16)           pos≈0.67  flat-out left      6th+  310 km/h flat  [most committed corner in F1]
+- Casio Triangle (T17) pos≈0.73  right-left chicane 2nd   310→90 km/h  [last braking zone, DRS]
+- Degner exit straight pos≈0.85  fast right (T18)   4th   250 km/h
+
+SECTOR SPLITS (approximate position boundaries):
+- S1: 0.00 → 0.33
+- S2: 0.33 → 0.67
+- S3: 0.67 → 1.00
+
+KEY RISKS: 130R is flat but punishes any lift; S-curves require constant rhythm — one mistake cascades.
+COACHING PRIORITY: 130R flat-out commitment; Hairpin braking depth; S-curves consistent rhythm.

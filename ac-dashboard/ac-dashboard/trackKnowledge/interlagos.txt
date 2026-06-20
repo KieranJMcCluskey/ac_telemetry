@@ -1,0 +1,24 @@
+TRACK: Autodromo Jose Carlos Pace, Interlagos — Brazilian Grand Prix
+Length: 4.309 km | Turns: 15 | Character: anti-clockwise, undulating, changeable weather, classic
+
+KEY CORNERS (name, normalised position, type, typical gear, speed in → out):
+- Senna S T1 right     pos≈0.04  fast right entry    5th  300→220 km/h  [tricky, leads to T2]
+- Senna S T2 left      pos≈0.08  tight left          3rd  220→130 km/h  [main braking of S]
+- Curva do Sol (T3)    pos≈0.13  fast left           4th  240 km/h flat
+- Descida do Lago (T4) pos≈0.20  medium right-right  3rd  230→180 km/h  [downhill, commitment]
+- Ferradura (T6-7)     pos≈0.28  right-left hairpin  2nd  250→80 km/h   [heavy braking]
+- Laranja (T8)         pos≈0.35  right               3rd  180 km/h
+- Pinheirinho (T9)     pos≈0.43  left hairpin        2nd  270→80 km/h   [second big stop]
+- Cotovelo (T10)       pos≈0.52  tight right         2nd  160→80 km/h
+- Mergulho (T11)       pos≈0.58  fast downhill right 4th  200→170 km/h  [downhill into Juncao]
+- Juncao (T12)         pos≈0.65  tight right hairpin 2nd  310→80 km/h   [hardest braking, DRS]
+- Subida dos Boxes (T13-14) pos≈0.75 uphill right-left 3rd 140→180 km/h
+- Arquibancadas (T15)  pos≈0.85  medium right        3rd  220 km/h      [exit onto main straight]
+
+SECTOR SPLITS (approximate position boundaries):
+- S1: 0.00 → 0.33
+- S2: 0.33 → 0.67
+- S3: 0.67 → 1.00
+
+KEY RISKS: Senna S can be slippery in the rain; Mergulho is downhill and blind; changeable weather.
+COACHING PRIORITY: Juncao braking depth and exit; Senna S flow and commitment; Ferradura stopping power.

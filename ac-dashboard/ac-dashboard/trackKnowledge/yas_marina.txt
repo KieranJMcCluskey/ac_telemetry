@@ -1,0 +1,23 @@
+TRACK: Yas Marina Circuit, Abu Dhabi — Abu Dhabi Grand Prix
+Length: 5.281 km | Turns: 16 | Character: night race, high-speed revised layout (2021+), fast and flowing
+
+KEY CORNERS (name, normalised position, type, typical gear, speed in → out):
+- T1 right             pos≈0.04  heavy braking right 3rd  310→130 km/h  [main braking zone, DRS]
+- T2 right             pos≈0.08  medium right        4th  180→230 km/h  exit speed key
+- T3-5 chicane section pos≈0.17  right-left-right    3rd  250→140 km/h
+- T6 left sweep        pos≈0.30  fast left sweeper   5th  280 km/h flat  [revised 2021 layout, was slow]
+- T7 right             pos≈0.35  fast right          5th  270 km/h flat  [full throttle sequence]
+- T9 right hairpin     pos≈0.42  tight right hairpin 2nd  290→80 km/h   [hardest braking, main overtaking]
+- T10 exit             pos≈0.47  right exit          3rd  80→190 km/h   exit traction critical
+- T11-12 chicane       pos≈0.55  right-left          3rd  260→140 km/h
+- T13 left             pos≈0.63  medium left         4th  230→170 km/h
+- T14-15 right-left    pos≈0.72  medium complex      3rd  230→160 km/h
+- T16 final right      pos≈0.84  medium right exit   3rd  200→230 km/h  [exit drives main straight]
+
+SECTOR SPLITS (approximate position boundaries):
+- S1: 0.00 → 0.33
+- S2: 0.33 → 0.67
+- S3: 0.67 → 1.00
+
+KEY RISKS: T6-7 revised layout is now flat — requires commitment that wasn't needed pre-2021.
+COACHING PRIORITY: T9 hairpin braking and exit; T6-7 flat commitment; T16 exit for main straight speed.

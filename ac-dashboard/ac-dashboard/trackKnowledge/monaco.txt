@@ -1,0 +1,24 @@
+TRACK: Circuit de Monaco, Monte-Carlo
+Length: 3.337 km | Turns: 19 | Character: street circuit, narrowest in F1, walls everywhere, no overtaking
+
+KEY CORNERS (name, normalised position, type, typical gear, speed in → out):
+- Sainte Devote (T1)   pos≈0.05  tight right        3rd   280→140 km/h  [contact risk, no run-off]
+- Massenet (T3)        pos≈0.13  medium right       4th   190 km/h
+- Casino Square (T4)   pos≈0.18  right-left         3rd   170→140 km/h
+- Mirabeau (T5-6)      pos≈0.25  tight right seq.   2nd   150→100 km/h
+- Grand Hotel Hairpin  pos≈0.32  180° loews hairpin 1st   130→50 km/h   [slowest corner in F1]
+- Portier (T9)         pos≈0.40  fast right exit    4th   160→210 km/h
+- Tunnel (T10-11)      pos≈0.45  tunnel exit        5th   280 km/h      [dark→light transition]
+- Nouvelle Chicane     pos≈0.55  heavy braking      2nd   280→80 km/h   [only real overtaking spot]
+- Tabac (T14)          pos≈0.60  fast right         4th   180 km/h      [no run-off, wall right]
+- Swimming Pool (T15)  pos≈0.67  right-left chicane 3rd   200→150 km/h
+- La Rascasse (T17)    pos≈0.80  tight right hairpin 2nd  130→60 km/h  [infamous blocking corner]
+- Anthony Noghes (T18) pos≈0.88  right              3rd   160 km/h
+
+SECTOR SPLITS (approximate position boundaries):
+- S1: 0.00 → 0.35
+- S2: 0.35 → 0.65
+- S3: 0.65 → 1.00
+
+KEY RISKS: walls everywhere with zero run-off; Tunnel exit (dark to light); Sainte Devote contact risk.
+COACHING PRIORITY: Nouvelle Chicane braking; Grand Hotel exit traction; Tunnel exit confidence.

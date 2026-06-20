@@ -1,0 +1,21 @@
+TRACK: Red Bull Ring, Spielberg — Austrian Grand Prix
+Length: 4.326 km | Turns: 10 | Character: hilly, short lap, hard braking into slow corners, high aero load
+
+KEY CORNERS (name, normalised position, type, typical gear, speed in → out):
+- T1 hairpin           pos≈0.10  heavy braking right 2nd  300→80 km/h   [DRS zone, main overtaking]
+- T2 right             pos≈0.15  slow right         2nd   90→160 km/h   exit traction key
+- T3 medium right      pos≈0.23  medium right       4th   230→190 km/h
+- T4 fast left sweep   pos≈0.32  fast left          5th   220 km/h flat  [commitment, understeer]
+- T5-6 chicane         pos≈0.40  right-left         3rd   230→150 km/h
+- T7 fast right        pos≈0.52  fast right kink    5th+  280 km/h flat  [commitment]
+- T8 hairpin           pos≈0.63  hardest braking    1st   310→60 km/h   [hardest, blind on entry]
+- T9 medium right      pos≈0.73  medium right       3rd   80→200 km/h
+- T10 final right      pos≈0.87  tight right        2nd   220→90 km/h   [exit drives back straight]
+
+SECTOR SPLITS (approximate position boundaries):
+- S1: 0.00 → 0.33
+- S2: 0.33 → 0.67
+- S3: 0.67 → 1.00
+
+KEY RISKS: T8 braking zone is blind and downhill; T4 is fast with wall on exit; elevation changes catch the unwary.
+COACHING PRIORITY: T8 braking commitment (blind entry); T1 braking depth; T10 exit for back straight.

@@ -1,0 +1,25 @@
+TRACK: Silverstone Circuit, Great Britain
+Length: 5.891 km | Turns: 18 | Character: high-speed, demanding aero circuit, smooth, iconic corners
+
+KEY CORNERS (name, normalised position, type, typical gear, speed in → out):
+- Abbey (T1)           pos≈0.04  medium right       4th   290→200 km/h
+- Village (T3)         pos≈0.08  heavy braking right 3rd  300→140 km/h  [overtaking]
+- The Loop (T4)        pos≈0.12  slow hairpin        2nd  160→80 km/h
+- Aintree (T5)         pos≈0.17  fast left          5th   240 km/h
+- Brooklands (T6)      pos≈0.22  medium right       3rd   230→180 km/h
+- Luffield (T7-8)      pos≈0.30  slow right-right   2nd   240→90 km/h   [exit onto straight]
+- Copse (T10)          pos≈0.42  fast right         5th+  270 km/h flat  [commitment]
+- Maggotts (T11)       pos≈0.47  fast left          5th   280 km/h flat
+- Becketts (T12-13)    pos≈0.52  fast right-left    4th   280→240 km/h  [most demanding sequence]
+- Chapel (T14)         pos≈0.57  fast right exit    5th   260 km/h flat  [exit onto Hangar Straight]
+- Stowe (T15)          pos≈0.70  heavy braking right 3rd  320→130 km/h
+- Vale (T16)           pos≈0.76  left-right         2nd   150→100 km/h
+- Club (T17-18)        pos≈0.85  right-right exit   3rd   200 km/h       [exit drives main straight]
+
+SECTOR SPLITS (approximate position boundaries):
+- S1: 0.00 → 0.33
+- S2: 0.33 → 0.67
+- S3: 0.67 → 1.00
+
+KEY RISKS: Maggotts-Becketts demands constant commitment at very high speed; Copse is flat but punishes understeer.
+COACHING PRIORITY: Maggotts-Becketts flat-out commitment; Luffield exit traction; Copse/Chapel straight-line courage.

@@ -1,0 +1,22 @@
+TRACK: Las Vegas Strip Circuit — Las Vegas Grand Prix
+Length: 6.201 km | Turns: 17 | Character: street circuit, cold track temp, long straights, heavy braking
+
+KEY CORNERS (name, normalised position, type, typical gear, speed in → out):
+- T1 right hairpin     pos≈0.06  heavy braking right 2nd  340→80 km/h  [main braking zone, DRS]
+- T3 right             pos≈0.13  medium right        3rd  200→140 km/h
+- T4 right             pos≈0.16  medium right        3rd  170→140 km/h
+- T7 left hairpin      pos≈0.25  tight left          2nd  280→80 km/h  [overtaking]
+- T8 right exit        pos≈0.28  right exit          3rd  80→180 km/h  traction key
+- T11 right            pos≈0.40  medium right        3rd  220→160 km/h
+- T12 tight right      pos≈0.44  slow right          2nd  200→90 km/h
+- T14 right            pos≈0.60  medium right        3rd  240→160 km/h
+- T15-16 chicane       pos≈0.68  left-right chicane  2nd  300→90 km/h  [second main braking zone]
+- T17 final right      pos≈0.80  tight right exit    3rd  130→180 km/h [exit drives back to S/F]
+
+SECTOR SPLITS (approximate position boundaries):
+- S1: 0.00 → 0.35
+- S2: 0.35 → 0.68
+- S3: 0.68 → 1.00
+
+KEY RISKS: very cold track temperature at night race (low grip); marble build-up off-line between chicanes.
+COACHING PRIORITY: T1 braking (cold tyres first lap); T15-16 chicane consistency; T7 hairpin exit traction.

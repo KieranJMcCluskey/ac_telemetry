@@ -1,0 +1,19 @@
+# Dependencies
+node_modules/
+
+# User data / secrets
+ac-dashboard/ac-dashboard/config.json
+ac-dashboard/ac-dashboard/captured/
+backend/.env
+
+# Electron build output
+dist/
+out/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*

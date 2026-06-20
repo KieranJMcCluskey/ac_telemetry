@@ -1,0 +1,23 @@
+TRACK: Circuit de Spa-Francorchamps, Belgium
+Length: 7.004 km | Turns: 19 | Character: high-speed classic, elevation changes, variable weather
+
+KEY CORNERS (name, normalised position, type, typical gear, speed in → out):
+- La Source (T1)       pos≈0.02  tight hairpin      2nd   290→90 km/h   [easy overtaking, careful exits]
+- Eau Rouge (T3)       pos≈0.06  uphill left kink   5th   180 km/h      [flat approach]
+- Raidillon (T4)       pos≈0.07  uphill right       5th+  290 km/h flat  [most iconic, commitment]
+- Les Combes (T5)      pos≈0.18  heavy braking left 2nd   330→120 km/h  [overtaking after Kemmel]
+- Malmedy (T7)         pos≈0.25  fast right         4th   240 km/h
+- Rivage (T8)          pos≈0.28  slow hairpin       2nd   250→80 km/h
+- Pouhon (T9-10)       pos≈0.33  fast double left   4th   280→240 km/h  [sustained high-speed, crucial]
+- Fagnes (T11-12)      pos≈0.40  medium complex     3rd   230→180 km/h
+- Stavelot (T15)       pos≈0.55  fast right exit    4th   210→250 km/h  [exit onto Blanchimont run]
+- Blanchimont (T16)    pos≈0.77  fast left          6th+  330 km/h flat  [wall left, commitment]
+- Bus Stop (T17-18)    pos≈0.83  heavy braking chic 1st   330→60 km/h  [overtaking, very tight]
+
+SECTOR SPLITS (approximate position boundaries):
+- S1: 0.00 → 0.33
+- S2: 0.33 → 0.67
+- S3: 0.67 → 1.00
+
+KEY RISKS: Eau Rouge/Raidillon flat commitment; Blanchimont wall on left; weather changes mid-session.
+COACHING PRIORITY: Raidillon full-throttle courage; Pouhon sustained commitment; Bus Stop braking precision.

@@ -1,0 +1,19 @@
+TRACK: Jeddah Corniche Circuit, Saudi Arabia
+Length: 6.174 km | Turns: 27 | Character: ultra-fast street circuit, walls everywhere, no run-off
+
+KEY CORNERS (name, normalised position, type, typical gear, speed in → out):
+- T1 right             pos≈0.03  heavy braking      3rd   330→140 km/h
+- T4 chicane           pos≈0.08  right-left         3rd   220→140 km/h  [wall right at T4 exit]
+- T13 banked right     pos≈0.30  fast banked        5th   270 km/h flat  [commitment, walls close]
+- T17-19 sweepers      pos≈0.47  high-speed sweep   5th   290-310 km/h  [flat out sequence]
+- T22 tunnel exit      pos≈0.60  fast exit          5th   290 km/h      [blind exit]
+- T24-25 chicane       pos≈0.77  left-right         2nd   300→90 km/h   [hardest braking]
+- T27 final right      pos≈0.88  medium right       4th   180→210 km/h  [DRS into T1]
+
+SECTOR SPLITS (approximate position boundaries):
+- S1: 0.00 → 0.35
+- S2: 0.35 → 0.70
+- S3: 0.70 → 1.00
+
+KEY RISKS: walls on both sides throughout; T4 right wall; T22 tunnel exit blind; minimal run-off everywhere.
+COACHING PRIORITY: T13-19 flat-out commitment; T24-25 braking zone consistency; T4 chicane precision.

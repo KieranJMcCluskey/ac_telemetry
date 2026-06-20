@@ -1,0 +1,21 @@
+TRACK: Circuit of the Americas (COTA), Austin — United States Grand Prix
+Length: 5.513 km | Turns: 20 | Character: purpose-built, big elevation changes, mixed-speed
+
+KEY CORNERS (name, normalised position, type, typical gear, speed in → out):
+- T1 blind left        pos≈0.05  heavy braking left  2nd  320→90 km/h  [hardest braking, blind crest]
+- T2-6 esses           pos≈0.10  right-left sweepers 4th  280→240 km/h [inspired by Maggotts-Becketts]
+- T8 hairpin           pos≈0.25  right hairpin       2nd  250→90 km/h  [heavy braking, overtaking]
+- T9-10 right complex  pos≈0.30  right-right         3rd  180→150 km/h
+- T11 uphill right     pos≈0.35  fast right uphill   4th  230→200 km/h [rear-limited, elevation]
+- T12-15 back section  pos≈0.43  right-left complex  3rd  220→160 km/h
+- T16-17 hairpin       pos≈0.55  tight right hairpin 2nd  260→80 km/h  [late apex, DRS]
+- T18 right            pos≈0.63  fast right          4th  200→230 km/h
+- T19-20 final complex pos≈0.72  right-left exit     3rd  200→150 km/h [exit speed onto main straight]
+
+SECTOR SPLITS (approximate position boundaries):
+- S1: 0.00 → 0.33
+- S2: 0.33 → 0.67
+- S3: 0.67 → 1.00
+
+KEY RISKS: T1 is completely blind over the crest; T2-6 esses require full commitment.
+COACHING PRIORITY: T1 braking point (blind, reference needed); T2-6 esses flat commitment; T16-17 exit traction.

@@ -1,0 +1,1691 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AC Sessions</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0a0c;
+  --bg2: #111115;
+  --bg3: #16161c;
+  --bg4: #1e1e26;
+  --border: rgba(255,255,255,0.07);
+  --border2: rgba(255,255,255,0.12);
+  --accent: #e8373e;
+  --accent2: #ff6b35;
+  --gold: #d4af37;
+  --silver: #a8a8b3;
+  --bronze: #c47722;
+  --text: #f0f0f4;
+  --muted: #6b6b7a;
+  --muted2: #4a4a58;
+  --green: #22c55e;
+  --purple: #a855f7;
+  --blue: #3b82f6;
+  --yellow: #eab308;
+  --font-display: 'Rajdhani', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --font-body: 'Inter', sans-serif;
+  --lap1-color: #e8373e;
+  --lap2-color: #47c7fc;
+}
+
+/* ─── F1 TEAM THEMES ────────────────────────────────────── */
+[data-theme="mclaren"]    { --accent:#FF8000; --accent2:#47C7FC; --bg:#0e0b00; --bg2:#1a1200; --bg3:#241900; --border:rgba(255,128,0,0.12); --border2:rgba(255,128,0,0.2); --lap1-color:#FF8000; --lap2-color:#47C7FC; }
+[data-theme="ferrari"]    { --accent:#DC0000; --accent2:#F7D117; --bg:#0e0000; --bg2:#1a0000; --bg3:#220000; --border:rgba(220,0,0,0.15); --border2:rgba(220,0,0,0.25); --lap1-color:#DC0000; --lap2-color:#F7D117; }
+[data-theme="mercedes"]   { --accent:#00D2BE; --accent2:#C0C0C0; --bg:#000e0d; --bg2:#001412; --bg3:#001a18; --border:rgba(0,210,190,0.12); --border2:rgba(0,210,190,0.2); --lap1-color:#00D2BE; --lap2-color:#C0C0C0; }
+[data-theme="redbull"]    { --accent:#1E5BC6; --accent2:#DC052D; --bg:#00010e; --bg2:#000318; --bg3:#000520; --border:rgba(30,91,198,0.15); --border2:rgba(30,91,198,0.25); --lap1-color:#1E5BC6; --lap2-color:#DC052D; }
+[data-theme="alpine"]     { --accent:#0090FF; --accent2:#FF87BC; --bg:#00000e; --bg2:#000018; --bg3:#000020; --border:rgba(0,144,255,0.12); --border2:rgba(0,144,255,0.2); --lap1-color:#0090FF; --lap2-color:#FF87BC; }
+[data-theme="astonmartin"]{ --accent:#006F62; --accent2:#CEDC00; --bg:#000e0a; --bg2:#00140e; --bg3:#001a12; --border:rgba(0,111,98,0.15); --border2:rgba(0,111,98,0.25); --lap1-color:#00C899; --lap2-color:#CEDC00; }
+[data-theme="williams"]   { --accent:#005AFF; --accent2:#00CFFF; --bg:#00000e; --bg2:#000018; --bg3:#000022; --border:rgba(0,90,255,0.12); --border2:rgba(0,90,255,0.2); --lap1-color:#005AFF; --lap2-color:#00CFFF; }
+[data-theme="haas"]       { --accent:#E10600; --accent2:#ffffff; --bg:#0e0e0e; --bg2:#181818; --bg3:#202020; --border:rgba(255,255,255,0.07); --border2:rgba(255,255,255,0.12); --lap1-color:#E10600; --lap2-color:#ffffff; }
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 13px;
+  line-height: 1.5;
+  min-height: 100vh;
+}
+
+/* scrollbar */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: var(--bg2); }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+
+/* ─── TOPBAR ─────────────────────────────── */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  height: 52px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  backdrop-filter: blur(12px);
+}
+.topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.logo {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--text);
+}
+.logo span { color: var(--accent); }
+.status-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--muted2);
+  transition: background 0.3s;
+  flex-shrink: 0;
+}
+.status-dot.live { background: var(--green); box-shadow: 0 0 6px var(--green); animation: pulse 2s infinite; }
+.status-dot.stale { background: var(--yellow); }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
+.status-label { font-size: 11px; color: var(--muted); letter-spacing: 0.04em; }
+.topbar-right { display: flex; align-items: center; gap: 12px; }
+.session-count {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--muted);
+  padding: 3px 10px;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+}
+
+/* ─── LAYOUT ─────────────────────────────── */
+.layout {
+  display: flex;
+  height: calc(100vh - 52px);
+  overflow: hidden;
+}
+
+/* ─── SIDEBAR ────────────────────────────── */
+.sidebar {
+  width: 280px;
+  flex-shrink: 0;
+  border-right: 1px solid var(--border);
+  overflow-y: auto;
+  background: var(--bg);
+}
+.sidebar-header {
+  padding: 16px 16px 8px;
+  font-family: var(--font-display);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  color: var(--muted);
+  text-transform: uppercase;
+}
+.session-item {
+  padding: 10px 16px;
+  cursor: pointer;
+  border-left: 2px solid transparent;
+  transition: all 0.15s;
+  border-bottom: 1px solid var(--border);
+}
+.session-item:hover { background: var(--bg3); }
+.session-item.active {
+  background: var(--bg3);
+  border-left-color: var(--accent);
+}
+.session-item-track {
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.session-item-meta {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-top: 3px;
+  flex-wrap: wrap;
+}
+.session-item-date { color: var(--muted); font-size: 11px; }
+.session-item-type {
+  font-size: 10px;
+  padding: 1px 6px;
+  border-radius: 2px;
+  font-family: var(--font-display);
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+.type-practice { background: rgba(59,130,246,0.15); color: #60a5fa; }
+.type-qualify  { background: rgba(168,85,247,0.15); color: #c084fc; }
+.type-race     { background: rgba(232,55,62,0.15);  color: #f87171; }
+.type-unknown  { background: var(--bg4); color: var(--muted); }
+.session-item-best {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--accent);
+  margin-left: auto;
+}
+.session-item-laps { font-size: 11px; color: var(--muted); }
+
+/* ─── MAIN ───────────────────────────────── */
+.main {
+  flex: 1;
+  min-width: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 24px;
+}
+.main > * + * {
+  margin-top: 20px;
+}
+
+/* ─── EMPTY STATE ────────────────────────── */
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  gap: 12px;
+  color: var(--muted);
+}
+.empty-icon { font-size: 48px; opacity: 0.3; }
+.empty-title { font-family: var(--font-display); font-size: 20px; font-weight: 600; color: var(--muted); }
+.empty-sub { font-size: 12px; text-align: center; max-width: 300px; line-height: 1.6; }
+
+/* ─── SESSION HEADER ─────────────────────── */
+.session-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.session-title {
+  font-family: var(--font-display);
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  line-height: 1.1;
+}
+.session-title small {
+  display: block;
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--muted);
+  letter-spacing: 0.02em;
+  font-family: var(--font-body);
+  margin-top: 2px;
+}
+.session-badges { display: flex; gap: 6px; flex-wrap: wrap; align-items: flex-start; margin-top: 4px; }
+.badge {
+  font-size: 11px;
+  padding: 3px 9px;
+  border-radius: 3px;
+  font-family: var(--font-display);
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  border: 1px solid;
+}
+.badge-track { background: rgba(232,55,62,0.1); color: var(--accent); border-color: rgba(232,55,62,0.25); }
+.badge-car   { background: rgba(255,255,255,0.04); color: var(--muted); border-color: var(--border); }
+.badge-date  { background: transparent; color: var(--muted); border-color: var(--border); font-family: var(--font-mono); font-size: 10px; }
+.badge-mp    { background: rgba(168,85,247,0.1); color: #c084fc; border-color: rgba(168,85,247,0.25); }
+
+/* ─── STAT CARDS ─────────────────────────── */
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 10px;
+}
+.stat-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 12px 14px;
+  position: relative;
+  overflow: hidden;
+}
+.stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: var(--accent);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.stat-card:hover::before { opacity: 1; }
+.stat-label {
+  font-size: 10px;
+  color: var(--muted);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-family: var(--font-display);
+  font-weight: 600;
+}
+.stat-value {
+  font-family: var(--font-mono);
+  font-size: 20px;
+  font-weight: 500;
+  margin-top: 4px;
+  color: var(--text);
+  letter-spacing: -0.02em;
+}
+.stat-value.accent { color: var(--accent); }
+.stat-value.green { color: var(--green); }
+.stat-value.purple { color: var(--purple); }
+.stat-sub { font-size: 10px; color: var(--muted); margin-top: 2px; }
+
+/* ─── CARD ───────────────────────────────── */
+.card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+}
+.card-title {
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text);
+}
+.card-body { padding: 16px; }
+.card-body.no-pad { padding: 0; }
+
+/* ─── SESSION TABS ───────────────────────── */
+.session-tabs {
+  display: flex;
+  gap: 0;
+  border-bottom: 1px solid var(--border);
+  overflow-x: auto;
+}
+.session-tab {
+  padding: 8px 16px;
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  white-space: nowrap;
+  transition: all 0.15s;
+  background: none;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+}
+.session-tab:hover { color: var(--text); }
+.session-tab.active { color: var(--text); border-bottom-color: var(--accent); }
+
+/* ─── LAP TABLE ──────────────────────────── */
+.lap-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+.lap-table th {
+  padding: 8px 12px;
+  text-align: left;
+  font-size: 10px;
+  font-family: var(--font-display);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+.lap-table td {
+  padding: 7px 12px;
+  border-bottom: 1px solid rgba(255,255,255,0.03);
+  white-space: nowrap;
+  color: var(--text);
+}
+.lap-table tr:last-child td { border-bottom: none; }
+.lap-table tr:hover td { background: rgba(255,255,255,0.02); }
+.lap-table tr.best-row td { color: var(--purple); }
+.lap-table tr.invalid-row td { color: var(--muted2); }
+.lap-table .delta { color: var(--muted); font-size: 11px; }
+.lap-table .delta.pos { color: #f87171; }
+.lap-table .delta.neg { color: var(--green); }
+.lap-table .sector-best { color: var(--purple); }
+.lap-table .cuts-badge {
+  background: rgba(234,179,8,0.15);
+  color: var(--yellow);
+  padding: 1px 5px;
+  border-radius: 2px;
+  font-size: 10px;
+}
+
+/* ─── CHART ──────────────────────────────── */
+.chart-wrap {
+  position: relative;
+  width: 100%;
+  height: 220px;
+}
+
+/* ─── RACE GRID ──────────────────────────── */
+.race-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+.race-table th {
+  padding: 8px 12px;
+  text-align: left;
+  font-size: 10px;
+  font-family: var(--font-display);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  border-bottom: 1px solid var(--border);
+}
+.race-table td {
+  padding: 9px 12px;
+  border-bottom: 1px solid rgba(255,255,255,0.03);
+}
+.race-table tr:last-child td { border-bottom: none; }
+.race-table tr:hover td { background: rgba(255,255,255,0.02); }
+.race-table tr.you-row td { background: rgba(59,130,246,0.05); }
+.race-table tr.you-row td:first-child { border-left: 2px solid var(--blue); }
+.pos-medal { font-family: var(--font-mono); font-size: 13px; font-weight: 500; }
+.pos-1 { color: var(--gold); }
+.pos-2 { color: var(--silver); }
+.pos-3 { color: var(--bronze); }
+.driver-you { color: var(--blue); font-weight: 500; }
+.lap-time { font-family: var(--font-mono); font-size: 12px; }
+.gap-time { font-family: var(--font-mono); font-size: 11px; color: var(--muted); }
+
+/* ─── SECTOR BARS ────────────────────────── */
+.sector-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.sector-block {}
+.sector-label { font-size: 10px; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 6px; font-family: var(--font-display); font-weight: 600; }
+.sector-value { font-family: var(--font-mono); font-size: 18px; font-weight: 500; }
+.sector-bar-bg { height: 3px; background: var(--bg4); border-radius: 2px; margin-top: 6px; overflow: hidden; }
+.sector-bar-fill { height: 100%; border-radius: 2px; background: var(--accent); transition: width 0.5s ease; }
+
+/* ─── LOADING ────────────────────────────── */
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  gap: 10px;
+  color: var(--muted);
+}
+.spinner {
+  width: 16px; height: 16px;
+  border: 2px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ─── FLASH ──────────────────────────────── */
+@keyframes flashIn {
+  from { background: rgba(232,55,62,0.1); }
+  to   { background: transparent; }
+}
+.flash { animation: flashIn 1s ease; }
+
+.no-sessions {
+  padding: 32px;
+  text-align: center;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.8;
+}
+
+/* ─── LAP ROW CLICKABLE ──────────────────── */
+.lap-table tr[data-lap] {
+  cursor: pointer;
+}
+.lap-table tr[data-lap]:hover td {
+  background: rgba(232,55,62,0.06);
+}
+.lap-table tr[data-lap].telem-active td {
+  background: rgba(232,55,62,0.1);
+}
+.lap-table tr[data-lap].telem-active td:first-child {
+  border-left: 2px solid var(--accent);
+}
+.lap-table tr.lap-row-clickable.telem-compare td {
+  background: rgba(71,199,252,0.08);
+}
+.lap-table tr.lap-row-clickable.telem-compare td:first-child {
+  border-left: 2px solid var(--lap2-color);
+}
+
+/* ─── TELEMETRY PANEL ────────────────────── */
+.telem-panel {
+  background: var(--bg);
+  border: 1px solid var(--border2);
+  border-radius: 8px;
+  overflow: visible;
+  animation: slideDown 0.2s ease;
+}
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.telem-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg2);
+}
+.telem-title {
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text);
+}
+.telem-meta {
+  font-size: 11px;
+  color: var(--muted);
+  font-family: var(--font-mono);
+}
+.telem-close {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  border-radius: 4px;
+  width: 24px; height: 24px;
+  cursor: pointer;
+  font-size: 14px;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.15s;
+  flex-shrink: 0;
+}
+.telem-close:hover { border-color: var(--accent); color: var(--accent); }
+.telem-loading {
+  display: flex; align-items: center; gap: 10px;
+  padding: 32px; color: var(--muted); justify-content: center;
+}
+.telem-error {
+  padding: 20px 16px;
+  color: #f87171;
+  font-size: 12px;
+  font-family: var(--font-mono);
+}
+.telem-charts {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  background: var(--border);
+}
+.telem-chart-block {
+  background: var(--bg);
+  padding: 14px 16px;
+}
+.telem-chart-block.full-width {
+  grid-column: 1 / -1;
+}
+.telem-chart-label {
+  font-size: 10px;
+  color: var(--muted);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-family: var(--font-display);
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+.telem-chart-wrap {
+  position: relative;
+  height: 120px;
+}
+.telem-chart-wrap.tall { height: 160px; }
+.telem-no-data {
+  display: flex; align-items: center; justify-content: center;
+  height: 80px;
+  color: var(--muted2);
+  font-size: 11px;
+  font-style: italic;
+}
+/* ─── ANALYSIS PANEL ─────────────────────────────────────── */
+.telem-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg2);
+}
+.telem-tab {
+  padding: 8px 16px;
+  font-size: 11px;
+  font-family: var(--font-display);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all 0.15s;
+  margin-bottom: -1px;
+}
+.telem-tab:hover { color: var(--text); }
+.telem-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+.telem-tab-content { display: none; }
+.telem-tab-content.active { display: block; }
+#tab-analysis.active { max-height: 500px; overflow-y: auto; }
+.analysis-section { padding: 14px 16px; border-bottom: 1px solid var(--border); }
+.analysis-section:last-child { border-bottom: none; }
+.analysis-section-title {
+  font-size: 10px; font-family: var(--font-display); font-weight: 600;
+  letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted);
+  margin-bottom: 10px;
+}
+.analysis-table { width: 100%; border-collapse: collapse; font-size: 11px; }
+.analysis-table th {
+  text-align: left; color: var(--muted); font-weight: 500;
+  padding: 4px 8px; font-size: 10px; text-transform: uppercase;
+  border-bottom: 1px solid var(--border);
+}
+.analysis-table td { padding: 5px 8px; color: var(--text); font-family: var(--font-mono); }
+.analysis-table tr:hover td { background: rgba(255,255,255,0.02); }
+.analysis-table td.pos  { color: #22c55e; }
+.analysis-table td.neg  { color: #f87171; }
+.analysis-table td.neut { color: var(--muted); }
+.stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.stat-mini { background: var(--bg3); border-radius: 6px; padding: 10px 12px; }
+.stat-mini-val { font-size: 18px; font-weight: 700; color: var(--text); font-family: var(--font-display); }
+.stat-mini-label { font-size: 10px; color: var(--muted); margin-top: 2px; text-transform: uppercase; letter-spacing: 0.05em; }
+.delta-chart-wrap { height: 100px; position: relative; }
+.trail-badge { font-size: 9px; background: rgba(168,85,247,0.2); color: #a855f7; border-radius: 3px; padding: 1px 4px; }
+
+/* ── Coach ── */
+.coach-btn { background: linear-gradient(135deg,#6d28d9,#a855f7); border: none; color: #fff; font-family: var(--font-display); font-size: 13px; font-weight: 600; letter-spacing: .5px; padding: 6px 16px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: opacity .15s; }
+.coach-btn:hover { opacity: .85; }
+.coach-btn:disabled { opacity: .45; cursor: not-allowed; }
+.coach-top-priority { background: linear-gradient(135deg,rgba(109,40,217,.18),rgba(168,85,247,.1)); border: 1px solid rgba(168,85,247,.4); border-radius: 10px; padding: 16px 20px; margin-bottom: 20px; }
+.coach-top-priority .ctp-label { font-size: 10px; font-weight: 700; letter-spacing: 1.5px; color: #a855f7; text-transform: uppercase; margin-bottom: 6px; }
+.coach-top-priority .ctp-text { font-size: 15px; font-weight: 600; color: var(--text); line-height: 1.4; }
+.coach-summary { font-size: 13px; color: var(--silver); line-height: 1.6; margin-bottom: 20px; padding: 12px 16px; background: var(--bg3); border-radius: 8px; }
+.coach-zones { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+@media (max-width: 900px) { .coach-zones { grid-template-columns: 1fr; } }
+.coach-zone { border-radius: 8px; padding: 12px 14px; border-left: 3px solid; background: var(--bg3); }
+.coach-zone.braking  { border-color: var(--accent); }
+.coach-zone.throttle { border-color: var(--green); }
+.coach-zone.consistency { border-color: var(--yellow); }
+.coach-zone.track-tip { border-color: var(--blue); }
+.coach-zone-header { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+.coach-zone-name { font-family: var(--font-display); font-size: 14px; font-weight: 700; color: var(--text); }
+.coach-zone-pos { font-size: 10px; color: var(--muted); font-family: var(--font-mono); }
+.coach-zone-badge { font-size: 9px; font-weight: 700; letter-spacing: .8px; text-transform: uppercase; padding: 2px 6px; border-radius: 3px; }
+.coach-zone.braking  .coach-zone-badge { background: rgba(232,55,62,.15); color: var(--accent); }
+.coach-zone.throttle .coach-zone-badge { background: rgba(34,197,94,.15); color: var(--green); }
+.coach-zone.consistency .coach-zone-badge { background: rgba(234,179,8,.15); color: var(--yellow); }
+.coach-zone.track-tip .coach-zone-badge { background: rgba(59,130,246,.15); color: var(--blue); }
+.coach-zone-delta { margin-left: auto; font-family: var(--font-mono); font-size: 11px; font-weight: 600; color: var(--accent2); }
+.coach-zone-obs { font-size: 12px; color: var(--muted); line-height: 1.5; margin-bottom: 6px; }
+.coach-zone-instr { font-size: 12px; color: var(--text); font-weight: 500; }
+.coach-lap-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.coach-lap-table th { text-align: left; padding: 6px 10px; color: var(--muted); font-weight: 600; border-bottom: 1px solid var(--border); font-size: 10px; letter-spacing: .8px; text-transform: uppercase; }
+.coach-lap-table td { padding: 7px 10px; border-bottom: 1px solid var(--border); }
+.coach-lap-table tr:last-child td { border-bottom: none; }
+.coach-section-title { font-family: var(--font-display); font-size: 12px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); margin: 0 0 10px; }
+.coach-loading { display: flex; align-items: center; gap: 12px; padding: 32px; color: var(--muted); font-size: 14px; }
+.coach-spinner { width: 20px; height: 20px; border: 2px solid var(--border2); border-top-color: #a855f7; border-radius: 50%; animation: spin .7s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── Settings Modal ── */
+.settings-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.75); z-index: 200; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
+.settings-overlay.hidden { display: none; }
+.settings-modal { background: var(--bg2); border: 1px solid var(--border2); border-radius: 12px; width: 460px; max-width: 95vw; max-height: 90vh; overflow-y: auto; box-shadow: 0 24px 64px rgba(0,0,0,.5); }
+.settings-header { display: flex; align-items: center; justify-content: space-between; padding: 18px 20px; border-bottom: 1px solid var(--border); }
+.settings-title { font-family: var(--font-display); font-size: 18px; font-weight: 700; letter-spacing: .04em; }
+.settings-close { background: none; border: 1px solid var(--border); color: var(--muted); width: 28px; height: 28px; border-radius: 4px; cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center; transition: .15s; }
+.settings-close:hover { border-color: var(--accent); color: var(--accent); }
+.settings-mode-tabs { display: flex; border-bottom: 1px solid var(--border); }
+.settings-mode-tab { flex: 1; padding: 10px; font-family: var(--font-display); font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px; transition: .15s; background: none; border-top: none; border-left: none; border-right: none; text-align: center; }
+.settings-mode-tab:hover { color: var(--text); }
+.settings-mode-tab.active { color: var(--text); border-bottom-color: var(--accent); }
+.settings-body { padding: 20px; }
+.settings-pane { display: none; }
+.settings-pane.active { display: block; }
+.s-label { font-size: 10px; font-family: var(--font-display); font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; display: block; }
+.s-input { width: 100%; background: var(--bg3); border: 1px solid var(--border2); color: var(--text); padding: 9px 12px; border-radius: 6px; font-size: 13px; font-family: var(--font-mono); outline: none; transition: .15s; }
+.s-input:focus { border-color: var(--purple); }
+.s-row { margin-bottom: 16px; }
+.s-hint { font-size: 11px; color: var(--muted); margin-top: 5px; line-height: 1.5; }
+.s-hint a { color: var(--accent); }
+.s-btn { padding: 9px 18px; border-radius: 6px; font-family: var(--font-display); font-size: 13px; font-weight: 700; letter-spacing: .04em; cursor: pointer; transition: .15s; border: none; }
+.s-btn-primary { background: linear-gradient(135deg,#6d28d9,var(--purple)); color: #fff; }
+.s-btn-primary:hover { opacity: .85; }
+.s-btn-secondary { background: var(--bg3); border: 1px solid var(--border2); color: var(--text); }
+.s-btn-secondary:hover { border-color: var(--border2); background: var(--bg4); }
+.s-btn-danger { background: rgba(232,55,62,.12); border: 1px solid rgba(232,55,62,.3); color: var(--accent); }
+.s-btn-danger:hover { background: rgba(232,55,62,.2); }
+.s-status { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-radius: 6px; background: var(--bg3); border: 1px solid var(--border); margin-bottom: 16px; font-size: 12px; }
+.s-status-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.s-status-dot.ok { background: var(--green); box-shadow: 0 0 6px var(--green); }
+.s-status-dot.warn { background: var(--yellow); }
+.s-status-dot.err { background: var(--accent); }
+.s-divider { border: none; border-top: 1px solid var(--border); margin: 18px 0; }
+.s-balance { font-family: var(--font-mono); font-size: 22px; font-weight: 500; color: var(--purple); }
+.s-balance-label { font-size: 11px; color: var(--muted); margin-top: 2px; }
+.s-msg { font-size: 12px; margin-top: 10px; padding: 8px 12px; border-radius: 5px; }
+.s-msg.err  { background: rgba(232,55,62,.1); color: #f87171; }
+.s-msg.ok   { background: rgba(34,197,94,.1); color: var(--green); }
+.topbar-settings-btn { background: var(--bg3); border: 1px solid var(--border2); color: var(--muted); width: 32px; height: 32px; border-radius: 4px; cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center; transition: .15s; }
+.topbar-settings-btn:hover { border-color: var(--border2); color: var(--text); background: var(--bg4); }
+.token-badge { font-family: var(--font-mono); font-size: 11px; color: var(--purple); padding: 3px 8px; border: 1px solid rgba(168,85,247,.3); border-radius: 3px; background: rgba(168,85,247,.08); }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-left">
+    <div class="logo">AC<span>.</span>SESSION</div>
+    <div style="display:flex;align-items:center;gap:6px">
+      <div class="status-dot" id="statusDot"></div>
+      <span class="status-label" id="statusLabel">Connecting…</span>
+    </div>
+  </div>
+  <div class="topbar-right">
+    <select id="themeSelect" onchange="setTheme(this.value)" title="Team Theme" style="background:var(--bg2);color:var(--text);border:1px solid var(--border2);border-radius:4px;padding:4px 8px;font-size:11px;font-family:var(--font-display);cursor:pointer;outline:none;">
+      <option value="">🏁 Default</option>
+      <option value="mclaren">🟠 McLaren</option>
+      <option value="ferrari">🔴 Ferrari</option>
+      <option value="mercedes">🩵 Mercedes</option>
+      <option value="redbull">🔵 Red Bull</option>
+      <option value="alpine">💙 Alpine</option>
+      <option value="astonmartin">🟢 Aston Martin</option>
+      <option value="williams">🫐 Williams</option>
+      <option value="haas">⚫ Haas</option>
+    </select>
+    <a href="/setup.html" target="_blank" title="F1 2026 MCL40 Setup Guide" style="background:var(--bg3);border:1px solid var(--border2);color:var(--text);padding:6px 12px;border-radius:4px;font-family:var(--font-display);font-size:12px;font-weight:600;letter-spacing:1px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:6px;" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='var(--border2)';this.style.color='var(--text)'">⚙ SETUP GUIDE</a>
+    <span class="session-count" id="sessionCount">– sessions</span>
+    <span style="font-size:11px;color:var(--muted)" id="lastUpdate"></span>
+    <span class="token-badge" id="tokenBadge" style="display:none"></span>
+    <button class="topbar-settings-btn" onclick="openSettings()" title="Settings">⚙</button>
+  </div>
+</div>
+
+<!-- ── Settings Modal ── -->
+<div class="settings-overlay hidden" id="settingsOverlay" onclick="if(event.target===this)closeSettings()">
+  <div class="settings-modal">
+    <div class="settings-header">
+      <span class="settings-title">⚙ Settings</span>
+      <button class="settings-close" onclick="closeSettings()">×</button>
+    </div>
+    <div class="settings-mode-tabs">
+      <button class="settings-mode-tab active" id="tabBtnByok" onclick="switchSettingsTab('byok')">🔑 API Key (BYOK)</button>
+      <button class="settings-mode-tab" id="tabBtnToken" onclick="switchSettingsTab('token')">🎟 Coaching Tokens</button>
+    </div>
+
+    <!-- BYOK pane -->
+    <div class="settings-body">
+      <div class="settings-pane active" id="paneByok">
+        <div class="s-status" id="byokStatus">
+          <div class="s-status-dot warn" id="byokDot"></div>
+          <span id="byokStatusText">No API key configured</span>
+        </div>
+        <div class="s-row">
+          <label class="s-label">Anthropic API Key</label>
+          <input class="s-input" type="password" id="byokKeyInput" placeholder="sk-ant-…" autocomplete="off">
+          <div class="s-hint">
+            Get your key at <a href="https://console.anthropic.com/settings/keys" target="_blank">console.anthropic.com</a>.
+            Stored locally on this machine only — never sent anywhere except Anthropic's API.
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center">
+          <button class="s-btn s-btn-primary" onclick="saveApiKey()">Save Key</button>
+          <button class="s-btn s-btn-danger" id="clearKeyBtn" onclick="clearApiKey()" style="display:none">Clear Key</button>
+        </div>
+        <div class="s-msg" id="byokMsg" style="display:none"></div>
+      </div>
+
+      <!-- Token pane -->
+      <div class="settings-pane" id="paneToken">
+        <!-- Logged out state -->
+        <div id="tokenLoggedOut">
+          <p style="font-size:12px;color:var(--muted);margin-bottom:16px;line-height:1.6">
+            Purchase coaching sessions once — no subscription. Tokens are stored in your account and work across reinstalls.
+          </p>
+          <div class="s-row">
+            <label class="s-label">Backend URL</label>
+            <input class="s-input" type="url" id="backendUrlInput" placeholder="https://your-site.netlify.app">
+            <div class="s-hint">Your Netlify site URL (set once, stays saved).</div>
+          </div>
+          <hr class="s-divider">
+          <div class="s-row">
+            <label class="s-label">Email</label>
+            <input class="s-input" type="email" id="tokenEmail" placeholder="you@example.com" style="font-family:var(--font-body)">
+          </div>
+          <div class="s-row">
+            <label class="s-label">Password</label>
+            <input class="s-input" type="password" id="tokenPass" placeholder="••••••••" style="font-family:var(--font-body)">
+          </div>
+          <div style="display:flex;gap:8px;margin-bottom:8px">
+            <button class="s-btn s-btn-primary" onclick="tokenLogin()">Sign In</button>
+            <button class="s-btn s-btn-secondary" onclick="tokenRegister()">Create Account</button>
+          </div>
+          <div class="s-msg" id="tokenMsg" style="display:none"></div>
+        </div>
+
+        <!-- Logged in state -->
+        <div id="tokenLoggedIn" style="display:none">
+          <div class="s-status">
+            <div class="s-status-dot ok"></div>
+            <span id="tokenEmailDisplay"></span>
+          </div>
+          <div style="display:flex;gap:20px;align-items:flex-end;margin-bottom:16px">
+            <div>
+              <div class="s-balance" id="tokenBalanceDisplay">–</div>
+              <div class="s-balance-label">coaching sessions remaining</div>
+            </div>
+            <button class="s-btn s-btn-primary" onclick="openPurchasePage()">Buy More</button>
+          </div>
+          <hr class="s-divider">
+          <button class="s-btn s-btn-danger" onclick="tokenLogout()">Sign Out</button>
+          <div class="s-msg" id="tokenMsgLoggedIn" style="display:none"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="layout">
+  <div class="sidebar">
+    <div class="sidebar-header">Sessions</div>
+    <div id="sidebarList"><div class="loading"><div class="spinner"></div> Loading…</div></div>
+  </div>
+  <div class="main" id="main">
+    <div class="empty">
+      <div class="empty-icon">🏎</div>
+      <div class="empty-title">Select a session</div>
+      <div class="empty-sub">Choose a session from the list on the left to view lap data, sector times, and race results.</div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+let allSessions = [];
+let selectedIdx = null;
+let activeSubSession = 0;
+let lapChart = null;
+
+// ─── UTILS ───────────────────────────────────────────────────────────────────
+
+function fmt(ms) {
+  if (!ms || ms <= 0) return '–';
+  const m = Math.floor(ms / 60000);
+  const s = ((ms % 60000) / 1000).toFixed(3);
+  return m + ':' + s.padStart(6, '0');
+}
+function fmtS(ms) {
+  if (!ms || ms <= 0) return '–';
+  return (ms / 1000).toFixed(3);
+}
+function fmtDelta(ms) {
+  if (!ms) return '';
+  const sign = ms > 0 ? '+' : '';
+  return sign + (ms / 1000).toFixed(3);
+}
+function formatTrack(t) {
+  if (!t) return 'Unknown';
+  return t.replace(/_/g,' ').replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+}
+function formatCar(c) {
+  if (!c) return '–';
+  return c.replace(/_/g,' ').replace(/\b\w/g, c => c.toUpperCase());
+}
+function sessionTypeName(type) {
+  return type === 1 ? 'Practice' : type === 2 ? 'Qualify' : type === 3 ? 'Race' : 'Session';
+}
+function sessionTypeClass(type) {
+  return type === 1 ? 'type-practice' : type === 2 ? 'type-qualify' : type === 3 ? 'type-race' : 'type-unknown';
+}
+function formatDate(iso) {
+  if (!iso) return '–';
+  return new Date(iso).toLocaleString('en-AU', { day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' });
+}
+function shortDate(iso) {
+  if (!iso) return '–';
+  return new Date(iso).toLocaleDateString('en-AU', { day:'2-digit', month:'short' });
+}
+
+// ─── FETCH ────────────────────────────────────────────────────────────────────
+
+async function fetchSessions() {
+  const resp = await fetch('/api/sessions');
+  return resp.json();
+}
+
+async function reload(flash = false) {
+  allSessions = await fetchSessions();
+  renderSidebar(flash);
+  document.getElementById('sessionCount').textContent = `${allSessions.length} session${allSessions.length !== 1 ? 's' : ''}`;
+  document.getElementById('lastUpdate').textContent = 'Updated ' + new Date().toLocaleTimeString();
+  if (selectedIdx !== null && allSessions[selectedIdx]) {
+    renderMain(selectedIdx);
+  }
+}
+
+// ─── SIDEBAR ──────────────────────────────────────────────────────────────────
+
+function renderSidebar(flash) {
+  const el = document.getElementById('sidebarList');
+  if (!allSessions.length) {
+    el.innerHTML = '<div class="no-sessions">No sessions found.<br>Play a session in AC first.</div>';
+    return;
+  }
+  el.innerHTML = allSessions.map((s, i) => {
+    const bestSession = s.sessions.find(ss => ss.bestLap);
+    const best = bestSession?.bestLap;
+    const hasRace = s.sessions.some(ss => ss.type === 3);
+    const types = [...new Set(s.sessions.filter(ss => ss.laps.length > 0 || ss.lapsCount > 0).map(ss => ss.type))];
+    const totalLaps = s.sessions.reduce((a, ss) => a + (ss.validLaps?.length || 0), 0);
+    const isMP = s.players?.length > 1;
+
+    return `<div class="session-item${selectedIdx === i ? ' active' : ''}" onclick="selectSession(${i})">
+      <div class="session-item-track">${formatTrack(s.track)}</div>
+      <div class="session-item-meta">
+        <span class="session-item-date">${shortDate(s.date)}</span>
+        ${types.map(t => `<span class="session-item-type ${sessionTypeClass(t)}">${sessionTypeName(t)}</span>`).join('')}
+        ${isMP ? '<span class="session-item-type type-qualify">MP</span>' : ''}
+        ${totalLaps > 0 ? `<span class="session-item-laps">${totalLaps}L</span>` : ''}
+        ${best ? `<span class="session-item-best">${fmt(best)}</span>` : ''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ─── SELECT ───────────────────────────────────────────────────────────────────
+
+function selectSession(idx) {
+  selectedIdx = idx;
+  activeSubSession = 0;
+  renderSidebar(false);
+  renderMain(idx);
+}
+
+// ─── MAIN ─────────────────────────────────────────────────────────────────────
+
+function renderMain(idx) {
+  const s = allSessions[idx];
+  if (!s) return;
+
+  const isMP = s.players?.length > 1;
+  const activeSessions = s.sessions.filter(ss => ss.laps.length > 0 || ss.lapsCount > 0);
+  if (activeSubSession >= activeSessions.length) activeSubSession = 0;
+
+  const main = document.getElementById('main');
+
+  // Aggregate stats
+  const allValidLaps = s.sessions.flatMap(ss => ss.validLaps || []);
+  const globalBest = Math.min(...allValidLaps.map(l => l.time).filter(t => t > 0), Infinity);
+  const avgLap = allValidLaps.length ? Math.round(allValidLaps.reduce((a, l) => a + l.time, 0) / allValidLaps.length) : 0;
+  const totalLaps = allValidLaps.length;
+  const hasRace = s.sessions.some(ss => ss.type === 3);
+
+  main.innerHTML = `
+    <div class="session-header">
+      <div>
+        <div class="session-title">
+          ${formatTrack(s.track)}
+          <small>${formatDate(s.date)} · ${s.driver}</small>
+        </div>
+        <div class="session-badges">
+          <span class="badge badge-car">${formatCar(s.car)}</span>
+          ${isMP ? `<span class="badge badge-mp">MULTIPLAYER · ${s.players.length} drivers</span>` : ''}
+          <span class="badge badge-date">${s.filename}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-label">Best Lap</div>
+        <div class="stat-value accent">${isFinite(globalBest) ? fmt(globalBest) : '–'}</div>
+        <div class="stat-sub">personal best</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Avg Lap</div>
+        <div class="stat-value">${avgLap ? fmt(avgLap) : '–'}</div>
+        <div class="stat-sub">valid laps only</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Valid Laps</div>
+        <div class="stat-value green">${totalLaps}</div>
+        <div class="stat-sub">${s.sessions.reduce((a,ss)=>a+(ss.laps?.length||0),0)} total</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Sessions</div>
+        <div class="stat-value">${activeSessions.length}</div>
+        <div class="stat-sub">${s.sessions.map(ss=>sessionTypeName(ss.type)).join(', ')}</div>
+      </div>
+      ${isFinite(globalBest) ? `<div class="stat-card">
+        <div class="stat-label">Best vs Avg</div>
+        <div class="stat-value purple">+${((avgLap - globalBest)/1000).toFixed(3)}s</div>
+        <div class="stat-sub">consistency gap</div>
+      </div>` : ''}
+    </div>
+
+    ${activeSessions.length > 0 ? renderSubSessions(s, activeSessions) : '<div class="card"><div class="no-sessions">No lap data recorded in this session.</div></div>'}
+    ${hasRace ? renderRace(s) : ''}
+  `;
+
+  // Draw chart after DOM is ready
+  setTimeout(() => {
+    const curSub = activeSessions[activeSubSession];
+    if (curSub) drawLapChart(curSub, globalBest);
+  }, 50);
+}
+
+function renderSubSessions(s, activeSessions) {
+  const cur = activeSessions[activeSubSession];
+  const globalBest = isFinite(Math.min(...s.sessions.flatMap(ss => (ss.validLaps||[]).map(l=>l.time)).filter(t=>t>0)))
+    ? Math.min(...s.sessions.flatMap(ss => (ss.validLaps||[]).map(l=>l.time)).filter(t=>t>0)) : null;
+
+  // Attach track id so renderLapTable can pass it to the telemetry API
+  if (cur) cur._trackId = s.track || '';
+
+  const trackForCoach = encodeURIComponent(s.track || '');
+
+  return `
+    <div class="card">
+      <div class="card-header">
+        <div style="display:flex;gap:0;flex:1;overflow:hidden">
+          ${activeSessions.map((ss, i) => `
+            <button class="session-tab ${i === activeSubSession ? 'active' : ''}"
+              onclick="switchSubSession(${i})">
+              ${sessionTypeName(ss.type)} ${activeSessions.filter((x,j)=>j<i&&x.type===ss.type).length > 0 ? i+1 : ''}
+              <span style="font-size:10px;opacity:0.6;margin-left:4px">${ss.validLaps?.length||0}L</span>
+            </button>
+          `).join('')}
+        </div>
+        <button class="coach-btn" id="coachBtn" onclick="loadCoach('${trackForCoach}')">
+          <span>&#127891;</span> Get Coaching
+        </button>
+      </div>
+
+      ${cur.validLaps?.length > 0 ? `
+      <div class="card-body" style="padding-bottom:8px">
+        <div class="chart-wrap">
+          <canvas id="lapChartCanvas"></canvas>
+        </div>
+      </div>` : ''}
+
+      ${cur.validLaps?.length > 0 ? renderSectorSummary(cur) : ''}
+
+      <div class="card-body no-pad">
+        ${renderLapTable(cur, globalBest)}
+      </div>
+    </div>
+
+    <div class="card" id="coachPanel" style="display:none">
+      <div class="card-header" style="justify-content:space-between">
+        <span class="card-title" style="font-family:var(--font-display);font-size:16px;font-weight:700">AI Driving Coach</span>
+        <button onclick="document.getElementById('coachPanel').style.display='none'" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:18px;line-height:1">×</button>
+      </div>
+      <div class="card-body" id="coachContent">
+        <div class="coach-loading"><div class="coach-spinner"></div>Analysing your laps…</div>
+      </div>
+    </div>
+  `;
+}
+
+function renderSectorSummary(ss) {
+  const validLaps = ss.validLaps || [];
+  if (!validLaps.length || !validLaps[0].sectors?.length) return '';
+  const numSectors = validLaps[0].sectors.length;
+
+  const sectors = Array.from({length: numSectors}, (_, i) => {
+    const times = validLaps.map(l => l.sectors[i]).filter(t => t > 0 && t < 120000);
+    if (!times.length) return null;
+    const best  = Math.min(...times);
+    const worst = Math.max(...times);
+    const avg   = Math.round(times.reduce((a,b) => a+b, 0) / times.length);
+    return { best, worst, avg, gain: avg - best };
+  }).filter(Boolean);
+
+  if (!sectors.length) return '';
+
+  const theoretical = sectors.reduce((a, s) => a + s.best, 0);
+  const actualBest  = Math.min(...validLaps.map(l => l.time));
+  const available   = actualBest - theoretical;
+  const focusIdx    = sectors.reduce((fi, s, i) => s.gain > sectors[fi].gain ? i : fi, 0);
+
+  const cell = (txt, color='var(--text)') =>
+    `<td style="padding:6px 10px;text-align:right;font-family:var(--font-mono);color:${color}">${txt}</td>`;
+  const hcell = (txt, highlight) =>
+    `<th style="padding:6px 10px;text-align:right;font-size:10px;font-family:var(--font-display);font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:${highlight?'var(--accent)':'var(--muted)'};border-bottom:1px solid var(--border)">${txt}${highlight?' ◄':''}</th>`;
+
+  return `
+    <div class="card-body" style="border-top:1px solid var(--border)">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:8px">
+        <span style="font-size:10px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;font-family:var(--font-display);font-weight:600">Sector Analysis</span>
+        <span style="font-size:11px;color:var(--muted)">
+          Theoretical best <span style="color:var(--purple);font-family:var(--font-mono)">${fmt(theoretical)}</span>
+          ${available > 50 ? `&nbsp;·&nbsp;<span style="color:var(--green);font-family:var(--font-mono)">+${(available/1000).toFixed(3)}s available</span>` : '&nbsp;·&nbsp;<span style="color:var(--green)">already near-optimal</span>'}
+        </span>
+      </div>
+      <table style="width:100%;border-collapse:collapse;font-size:11px">
+        <thead><tr>
+          <th style="padding:6px 10px;text-align:left;font-size:10px;font-family:var(--font-display);font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--border)"></th>
+          ${sectors.map((_, i) => hcell('S'+(i+1), i===focusIdx)).join('')}
+        </tr></thead>
+        <tbody>
+          <tr><td style="padding:6px 10px;font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)">Best</td>${sectors.map(s=>cell(fmtS(s.best)+'s','var(--purple)')).join('')}</tr>
+          <tr><td style="padding:6px 10px;font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)">Avg</td>${sectors.map(s=>cell(fmtS(s.avg)+'s')).join('')}</tr>
+          <tr><td style="padding:6px 10px;font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)">Worst</td>${sectors.map(s=>cell(fmtS(s.worst)+'s','var(--muted)')).join('')}</tr>
+          <tr style="border-top:1px solid var(--border)">
+            <td style="padding:6px 10px;font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)">To gain</td>
+            ${sectors.map((s,i)=>cell('+'+((s.gain)/1000).toFixed(3)+'s', i===focusIdx?'var(--accent)':'var(--green)')).join('')}
+          </tr>
+        </tbody>
+      </table>
+    </div>`;
+}
+
+function renderLapTable(ss, globalBest) {
+  const laps = (ss.laps || []).filter(l => l.lap >= 0);
+  if (!laps.length) return '<div class="no-sessions">No laps recorded.</div>';
+
+  const validTimes = laps.filter(l=>l.time>0&&l.sectors?.[0]<300000).map(l=>l.time);
+  const bestTime = validTimes.length ? Math.min(...validTimes) : null;
+  const numSectors = laps.find(l=>l.sectors?.length)?.sectors?.length || 0;
+
+  // Best sector times
+  const bestSectors = numSectors > 0 ? Array.from({length: numSectors}, (_, i) =>
+    Math.min(...laps.filter(l=>l.time>0&&l.sectors?.[0]<300000&&l.sectors?.[i]).map(l=>l.sectors[i]))
+  ) : [];
+
+  const headers = ['Lap', 'Time', 'Delta', ...Array.from({length: numSectors}, (_,i) => `S${i+1}`), 'Tyre', ''];
+  // We need track for the telemetry API call — grab it from the active session
+  const trackId = ss._trackId || '';
+  return `
+    <table class="lap-table" id="lapTable">
+      <thead><tr>${headers.map(h=>`<th>${h}</th>`).join('')}</tr></thead>
+      <tbody>
+        ${laps.map(l => {
+          const isOutlap = l.sectors?.[0] > 300000;
+          const isInvalid = l.time < 0 || isOutlap;
+          const isBest = !isInvalid && l.time === bestTime;
+          const delta = !isInvalid && bestTime ? l.time - bestTime : null;
+          const rowClass = isBest ? 'best-row' : isInvalid ? 'invalid-row' : '';
+          const sectorCells = numSectors > 0 ? Array.from({length: numSectors}, (_, i) => {
+            const st = l.sectors?.[i];
+            const isBestS = st && st === bestSectors[i] && !isInvalid;
+            return `<td class="${isBestS ? 'sector-best' : ''}">${st && st < 300000 ? fmtS(st) : '–'}</td>`;
+          }).join('') : '';
+
+          return `<tr class="${rowClass}" data-lap="${l.lap}" data-track="${trackId}" onclick="toggleTelemetry(this,${l.lap},'${trackId}')">
+            <td style="color:var(--muted)">${l.lap}</td>
+            <td class="lap-time${isBest ? ' ' : ''}">${isInvalid ? '<span style="color:var(--muted2)">INVALID</span>' : fmt(l.time)}</td>
+            <td class="delta${delta ? (delta > 0 ? ' pos' : delta < 0 ? ' neg' : '') : ''}">
+              ${delta !== null ? (delta === 0 ? '—' : fmtDelta(delta)) : ''}
+            </td>
+            ${sectorCells}
+            <td style="color:var(--muted)">${l.tyre || '–'}</td>
+            <td>${l.cuts > 0 ? `<span class="cuts-badge">${l.cuts}✂</span>` : ''}</td>
+          </tr>`;
+        }).join('')}
+      </tbody>
+    </table>
+    <div style="padding:12px 16px;font-size:11px;color:var(--muted2);font-style:italic">Click a lap to open telemetry in a new window</div>
+  `;
+}
+
+function renderRace(s) {
+  const raceSess = s.sessions.find(ss => ss.type === 3);
+  if (!raceSess || !raceSess.raceResult) return '';
+
+  const driverBests = {};
+  (raceSess.allDriverLaps || []).forEach(l => {
+    if (l.time > 0 && (!driverBests[l.car] || l.time < driverBests[l.car])) {
+      driverBests[l.car] = l.time;
+    }
+  });
+  const bestOfAll = Math.min(...Object.values(driverBests));
+
+  const finishOrder = raceSess.raceResult;
+  const players = s.players || [];
+
+  return `
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">Race Result</div>
+        <span style="font-size:11px;color:var(--muted)">${raceSess.lapsCount || '?'} laps</span>
+      </div>
+      <div class="card-body no-pad">
+        <table class="race-table">
+          <thead><tr>
+            <th>Pos</th><th>Driver</th><th>Car</th><th>Best Lap</th><th>Gap</th><th>FL</th>
+          </tr></thead>
+          <tbody>
+            ${finishOrder.map((carIdx, pos) => {
+              const p = players[carIdx] || {};
+              const best = driverBests[carIdx];
+              const gap = best && pos > 0 ? '+' + ((best - driverBests[finishOrder[0]])/1000).toFixed(3)+'s' : 'Leader';
+              const isYou = carIdx === 0;
+              const isFastestLap = best === bestOfAll;
+              const posClass = pos===0?'pos-1':pos===1?'pos-2':pos===2?'pos-3':'';
+              return `<tr class="${isYou ? 'you-row' : ''}">
+                <td><span class="pos-medal ${posClass}">${pos+1}</span></td>
+                <td class="${isYou ? 'driver-you' : ''}">${p.name || 'Driver '+carIdx}${isYou?' ★':''}</td>
+                <td style="color:var(--muted);font-size:11px">${formatCar(p.car)}</td>
+                <td class="lap-time">${fmt(best)}</td>
+                <td class="gap-time">${gap}</td>
+                <td>${isFastestLap ? '<span style="color:var(--purple);font-size:11px">⬡ FL</span>' : ''}</td>
+              </tr>`;
+            }).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  `;
+}
+
+// ─── SUB-SESSION SWITCH ───────────────────────────────────────────────────────
+
+function switchSubSession(i) {
+  activeSubSession = i;
+  if (selectedIdx !== null) renderMain(selectedIdx);
+}
+
+// ─── CHART ────────────────────────────────────────────────────────────────────
+
+function drawLapChart(ss, globalBest) {
+  const canvas = document.getElementById('lapChartCanvas');
+  if (!canvas) return;
+  if (lapChart) { lapChart.destroy(); lapChart = null; }
+
+  const valid = ss.validLaps || [];
+  if (!valid.length) return;
+
+  const bestTime = Math.min(...valid.map(l => l.time));
+  const labels = valid.map(l => 'L' + l.lap);
+  const data = valid.map(l => +(l.time / 1000).toFixed(3));
+  const colors = valid.map(l => l.time === bestTime ? '#a855f7' : '#e8373e');
+  const radii = valid.map(l => l.time === bestTime ? 6 : 3.5);
+
+  const minY = Math.min(...data) - 0.5;
+  const maxY = Math.max(...data) + 0.5;
+
+  lapChart = new Chart(canvas, {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [{
+        data,
+        borderColor: getComputedStyle(document.documentElement).getPropertyValue('--lap1-color').trim() || '#e8373e',
+        backgroundColor: 'rgba(232,55,62,0.08)',
+        pointBackgroundColor: colors,
+        pointRadius: radii,
+        pointHoverRadius: 6,
+        borderWidth: 1.5,
+        tension: 0.3,
+        fill: true,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: ctx => fmt(Math.round(ctx.parsed.y * 1000)),
+            afterLabel: ctx => {
+              const l = valid[ctx.dataIndex];
+              const delta = l.time - bestTime;
+              return delta === 0 ? '⬡ Best lap' : `+${(delta/1000).toFixed(3)}s`;
+            }
+          },
+          backgroundColor: '#1e1e26',
+          borderColor: '#2a2a35',
+          borderWidth: 1,
+          titleColor: '#6b6b7a',
+          bodyColor: '#f0f0f4',
+          padding: 10,
+        }
+      },
+      scales: {
+        y: {
+          min: minY, max: maxY,
+          ticks: {
+            color: '#6b6b7a',
+            font: { family: "'JetBrains Mono'", size: 10 },
+            callback: v => fmt(Math.round(v * 1000)),
+          },
+          grid: { color: 'rgba(255,255,255,0.04)' },
+        },
+        x: {
+          ticks: { color: '#6b6b7a', font: { size: 10 }, maxRotation: 0 },
+          grid: { display: false },
+        }
+      }
+    }
+  });
+}
+
+// ─── TELEMETRY ────────────────────────────────────────────────────────────────
+
+function toggleTelemetry(row, lapNum, track) {
+  if (activeLapRow === row) {
+    activeLapRow.classList.remove('telem-active');
+    activeLapRow = null;
+    return;
+  }
+  if (activeLapRow) activeLapRow.classList.remove('telem-active');
+  activeLapRow = row;
+  row.classList.add('telem-active');
+
+  let lapTimeMs = 0, sessionDate = '', driver = '';
+  let allLapsArr = [];
+  if (selectedIdx !== null && allSessions[selectedIdx]) {
+    const sess = allSessions[selectedIdx];
+    sessionDate = sess.date || '';
+    driver      = sess.driver || '';
+    const flatLaps = sess.sessions ? sess.sessions.flatMap(s => s.laps || []) : [];
+    const thisLap  = flatLaps.find(l => l.lap === lapNum);
+    if (thisLap) lapTimeMs = thisLap.time || 0;
+    allLapsArr = flatLaps.filter(l => l.lap >= 0 && l.time > 0).map(l => ({ lap: l.lap, time: l.time }));
+  }
+
+  const theme  = document.documentElement.dataset.theme || '';
+  const params = new URLSearchParams({
+    track, lap: lapNum, lapTime: lapTimeMs,
+    sessionDate, driver, theme,
+    allLaps: encodeURIComponent(JSON.stringify(allLapsArr)),
+  });
+
+  const w = window.open(
+    '/lap.html?' + params.toString(),
+    'lapDetail_' + lapNum,
+    'width=1280,height=800,resizable=yes,scrollbars=yes'
+  );
+  if (w) w.focus();
+}
+function setTheme(theme) {
+  document.documentElement.dataset.theme = theme;
+  localStorage.setItem('ac-theme', theme);
+}
+(function() {
+  const saved = localStorage.getItem('ac-theme');
+  if (saved) { document.documentElement.dataset.theme = saved; document.getElementById('themeSelect').value = saved; }
+})();
+
+let telemCharts  = {};
+let activeLapRow = null;
+
+function closeTelemetry() {
+  if (activeLapRow) { activeLapRow.classList.remove('telem-active'); activeLapRow = null; }
+}
+
+// ─── COACH ───────────────────────────────────────────────────────────────────
+
+async function loadCoach(track) {
+  const panel = document.getElementById('coachPanel');
+  const content = document.getElementById('coachContent');
+  const btn = document.getElementById('coachBtn');
+  if (!panel || !content) return;
+
+  panel.style.display = '';
+  content.innerHTML = '<div class="coach-loading"><div class="coach-spinner"></div>Analysing your laps — this takes 5–10 seconds…</div>';
+  panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  if (btn) btn.disabled = true;
+
+  try {
+    const r = await fetch(`/api/coach?track=${track}`);
+    const data = await r.json();
+    if (r.status === 402) {
+      const bal = data.balance ?? 0;
+      content.innerHTML = `<div style="padding:24px">
+        <div style="color:var(--yellow);font-size:15px;font-weight:600;margin-bottom:8px">No coaching tokens remaining</div>
+        <div style="color:var(--muted);font-size:13px;margin-bottom:16px">You have ${bal} token${bal !== 1 ? 's' : ''} left. Purchase more to continue.</div>
+        <button class="coach-btn" onclick="openSettings();switchSettingsTab('token')">Buy Tokens →</button>
+      </div>`;
+      return;
+    }
+    if (!r.ok) {
+      content.innerHTML = `<div style="padding:24px;color:var(--accent)">${data.error || 'Coach API error'}</div>`;
+      return;
+    }
+    content.innerHTML = renderCoachReport(data);
+  } catch (e) {
+    content.innerHTML = `<div style="padding:24px;color:var(--accent)">Network error: ${e.message}</div>`;
+  } finally {
+    if (btn) btn.disabled = false;
+  }
+}
+
+function renderCoachReport(r) {
+  const fmt = ms => {
+    if (!ms) return '–';
+    const m = Math.floor(ms / 60000);
+    const s = ((ms % 60000) / 1000).toFixed(3);
+    return `${m}:${s.padStart(6, '0')}`;
+  };
+  const fmtDelta = ms => ms == null ? '' : (ms > 0 ? `+${(ms / 1000).toFixed(3)}s` : `${(ms / 1000).toFixed(3)}s`);
+  const typeClass = t => ({ braking: 'braking', throttle: 'throttle', consistency: 'consistency', 'track-tip': 'track-tip' }[t] || 'braking');
+  const typeLabel = t => ({ braking: 'BRAKING', throttle: 'THROTTLE', consistency: 'CONSISTENCY', 'track-tip': 'TRACK TIP' }[t] || t.toUpperCase());
+
+  const zones = (r.zones || []).slice(0, 10).map(z => `
+    <div class="coach-zone ${typeClass(z.type)}">
+      <div class="coach-zone-header">
+        <span class="coach-zone-badge">${typeLabel(z.type)}</span>
+        <span class="coach-zone-name">${z.name}</span>
+        <span class="coach-zone-pos">pos ${typeof z.position === 'number' ? z.position.toFixed(2) : z.position}</span>
+        ${z.deltaMs != null ? `<span class="coach-zone-delta">~${(z.deltaMs / 1000).toFixed(2)}s</span>` : ''}
+      </div>
+      <div class="coach-zone-obs">${z.observation}</div>
+      <div class="coach-zone-instr">→ ${z.instruction}</div>
+    </div>`).join('');
+
+  const lapRows = (r.lapComparison || []).map(l => `
+    <tr>
+      <td style="font-family:var(--font-mono)">Lap ${l.lap}</td>
+      <td style="font-family:var(--font-mono)">${fmt(l.timeMs)}</td>
+      <td style="font-family:var(--font-mono);color:${l.vsbestMs === 0 ? 'var(--green)' : 'var(--accent)'}">${l.vsbestMs === 0 ? 'BEST' : fmtDelta(l.vsbestMs)}</td>
+      <td style="color:var(--green)">${l.strongSector || '–'}</td>
+      <td style="color:var(--accent)">${l.weakSector || '–'}</td>
+    </tr>`).join('');
+
+  return `
+    <div class="coach-top-priority">
+      <div class="ctp-label">&#9733; Top Priority</div>
+      <div class="ctp-text">${r.topPriority || '–'}</div>
+    </div>
+
+    <div class="coach-summary">${r.trackSummary || ''}</div>
+
+    ${r.bestLap ? `
+    <div style="display:flex;gap:20px;margin-bottom:20px">
+      <div class="stat-card" style="flex:1">
+        <div class="stat-label">Best Lap</div>
+        <div class="stat-value accent">${fmt(r.bestLap.timeMs)}</div>
+        <div class="stat-sub">Lap ${r.bestLap.lap}</div>
+      </div>
+      ${r.theoreticalBestMs ? `<div class="stat-card" style="flex:1">
+        <div class="stat-label">Theoretical Best</div>
+        <div class="stat-value purple">${fmt(r.theoreticalBestMs)}</div>
+        <div class="stat-sub">${fmtDelta(r.bestLap.timeMs - r.theoreticalBestMs)} available</div>
+      </div>` : ''}
+    </div>` : ''}
+
+    <p class="coach-section-title">Coaching Zones</p>
+    <div class="coach-zones">${zones}</div>
+
+    ${lapRows ? `
+    <p class="coach-section-title">Lap Comparison</p>
+    <table class="coach-lap-table">
+      <thead><tr><th>Lap</th><th>Time</th><th>vs Best</th><th>Strong</th><th>Weak</th></tr></thead>
+      <tbody>${lapRows}</tbody>
+    </table>` : ''}
+  `;
+}
+
+// ─── SETTINGS ────────────────────────────────────────────────────────────────
+
+let settingsConfig = {};
+
+async function openSettings() {
+  document.getElementById('settingsOverlay').classList.remove('hidden');
+  const r = await fetch('/api/config');
+  settingsConfig = await r.json();
+  renderSettings();
+  // Refresh token balance if in token mode
+  if (settingsConfig.mode === 'token' && settingsConfig.account?.loggedIn) {
+    refreshTokenBalance();
+  }
+}
+
+function closeSettings() {
+  document.getElementById('settingsOverlay').classList.add('hidden');
+}
+
+function switchSettingsTab(tab) {
+  document.getElementById('paneByok').classList.toggle('active', tab === 'byok');
+  document.getElementById('paneToken').classList.toggle('active', tab === 'token');
+  document.getElementById('tabBtnByok').classList.toggle('active', tab === 'byok');
+  document.getElementById('tabBtnToken').classList.toggle('active', tab === 'token');
+}
+
+function renderSettings() {
+  const cfg = settingsConfig;
+
+  // Activate correct tab based on current mode
+  switchSettingsTab(cfg.mode || 'byok');
+
+  // BYOK pane
+  const dot  = document.getElementById('byokDot');
+  const txt  = document.getElementById('byokStatusText');
+  const clrBtn = document.getElementById('clearKeyBtn');
+  if (cfg.hasApiKey) {
+    dot.className = 's-status-dot ok';
+    txt.textContent = `Key set: ${cfg.apiKeyMasked}`;
+    clrBtn.style.display = '';
+  } else {
+    dot.className = 's-status-dot warn';
+    txt.textContent = 'No API key configured';
+    clrBtn.style.display = 'none';
+  }
+  document.getElementById('byokKeyInput').value = '';
+
+  // Token pane
+  const backendInput = document.getElementById('backendUrlInput');
+  if (backendInput && cfg.backendUrl) backendInput.value = cfg.backendUrl;
+
+  if (cfg.account?.loggedIn) {
+    document.getElementById('tokenLoggedOut').style.display = 'none';
+    document.getElementById('tokenLoggedIn').style.display = '';
+    document.getElementById('tokenEmailDisplay').textContent = cfg.account.email || 'Signed in';
+    document.getElementById('tokenBalanceDisplay').textContent = '…';
+  } else {
+    document.getElementById('tokenLoggedOut').style.display = '';
+    document.getElementById('tokenLoggedIn').style.display = 'none';
+  }
+}
+
+async function saveApiKey() {
+  const key = document.getElementById('byokKeyInput').value.trim();
+  if (!key) { showSettingsMsg('byokMsg', 'err', 'Please enter an API key.'); return; }
+  await fetch('/api/config', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ mode: 'byok', apiKey: key }),
+  });
+  showSettingsMsg('byokMsg', 'ok', 'API key saved.');
+  document.getElementById('byokKeyInput').value = '';
+  const r = await fetch('/api/config');
+  settingsConfig = await r.json();
+  renderSettings();
+}
+
+async function clearApiKey() {
+  await fetch('/api/config', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ apiKey: '' }),
+  });
+  const r = await fetch('/api/config');
+  settingsConfig = await r.json();
+  renderSettings();
+  showSettingsMsg('byokMsg', 'ok', 'Key cleared.');
+}
+
+async function tokenLogin() {
+  const backendUrl = document.getElementById('backendUrlInput').value.trim();
+  const email = document.getElementById('tokenEmail').value.trim();
+  const pass  = document.getElementById('tokenPass').value;
+  if (!backendUrl) { showSettingsMsg('tokenMsg', 'err', 'Enter your backend URL first.'); return; }
+  if (!email || !pass) { showSettingsMsg('tokenMsg', 'err', 'Enter email and password.'); return; }
+
+  // Save backend URL first
+  await fetch('/api/config', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ backendUrl, mode: 'token' }),
+  });
+
+  // Call Supabase auth via backend proxy
+  try {
+    const res = await fetch(`${backendUrl}/.netlify/functions/auth`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'login', email, password: pass }),
+    });
+    const data = await res.json();
+    if (!res.ok || data.error) { showSettingsMsg('tokenMsg', 'err', data.error || 'Login failed.'); return; }
+
+    await fetch('/api/config', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ account: { email, accessToken: data.accessToken, refreshToken: data.refreshToken } }),
+    });
+
+    document.getElementById('tokenEmail').value = '';
+    document.getElementById('tokenPass').value  = '';
+    const r = await fetch('/api/config');
+    settingsConfig = await r.json();
+    renderSettings();
+    refreshTokenBalance();
+    updateTokenBadge();
+  } catch (e) {
+    showSettingsMsg('tokenMsg', 'err', 'Network error: ' + e.message);
+  }
+}
+
+async function tokenRegister() {
+  const backendUrl = document.getElementById('backendUrlInput').value.trim();
+  const email = document.getElementById('tokenEmail').value.trim();
+  const pass  = document.getElementById('tokenPass').value;
+  if (!backendUrl) { showSettingsMsg('tokenMsg', 'err', 'Enter your backend URL first.'); return; }
+  if (!email || !pass) { showSettingsMsg('tokenMsg', 'err', 'Enter email and password.'); return; }
+
+  await fetch('/api/config', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ backendUrl, mode: 'token' }),
+  });
+
+  try {
+    const res = await fetch(`${backendUrl}/.netlify/functions/auth`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'register', email, password: pass }),
+    });
+    const data = await res.json();
+    if (!res.ok || data.error) { showSettingsMsg('tokenMsg', 'err', data.error || 'Registration failed.'); return; }
+    showSettingsMsg('tokenMsg', 'ok', 'Account created! Check your email to confirm, then sign in.');
+  } catch (e) {
+    showSettingsMsg('tokenMsg', 'err', 'Network error: ' + e.message);
+  }
+}
+
+async function tokenLogout() {
+  await fetch('/api/config', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ account: { email: '', accessToken: '', refreshToken: '' } }),
+  });
+  const r = await fetch('/api/config');
+  settingsConfig = await r.json();
+  renderSettings();
+  document.getElementById('tokenBadge').style.display = 'none';
+}
+
+async function refreshTokenBalance() {
+  try {
+    const r = await fetch('/api/tokens/balance');
+    const d = await r.json();
+    if (d.balance != null) {
+      document.getElementById('tokenBalanceDisplay').textContent = d.balance;
+      updateTokenBadge(d.balance);
+    }
+  } catch {}
+}
+
+function updateTokenBadge(balance) {
+  const badge = document.getElementById('tokenBadge');
+  if (balance == null) { badge.style.display = 'none'; return; }
+  badge.textContent = `${balance} tokens`;
+  badge.style.display = '';
+}
+
+function openPurchasePage() {
+  const url = (settingsConfig.backendUrl || '').replace(/\/$/, '');
+  if (url) window.open(url, '_blank');
+  else showSettingsMsg('tokenMsgLoggedIn', 'err', 'Backend URL not set.');
+}
+
+function showSettingsMsg(id, type, text) {
+  const el = document.getElementById(id);
+  el.className = `s-msg ${type}`;
+  el.textContent = text;
+  el.style.display = '';
+  setTimeout(() => { if (el.textContent === text) el.style.display = 'none'; }, 4000);
+}
+
+// ─── SSE + INIT ───────────────────────────────────────────────────────────────
+
+function connectSSE() {
+  const dot = document.getElementById('statusDot');
+  const label = document.getElementById('statusLabel');
+  const es = new EventSource('/events');
+
+  es.onopen = () => {
+    dot.className = 'status-dot live';
+    label.textContent = 'Live · watching Sessions folder';
+  };
+  es.onmessage = e => {
+    if (e.data === 'update') {
+      reload(true);
+    }
+  };
+  es.onerror = () => {
+    dot.className = 'status-dot stale';
+    label.textContent = 'Reconnecting…';
+    es.close();
+    setTimeout(connectSSE, 3000);
+  };
+}
+
+(async () => {
+  await reload(false);
+  connectSSE();
+  // Load token balance in background if in token mode
+  try {
+    const r = await fetch('/api/tokens/balance');
+    const d = await r.json();
+    if (d.balance != null) updateTokenBadge(d.balance);
+  } catch {}
+})();
+</script>
+</body>
+</html>

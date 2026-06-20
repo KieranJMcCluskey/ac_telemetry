@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lap Detail</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="/chart.umd.js"></script>
+<style>
+:root {
+  --accent:#e8373e; --accent2:#ff6b35;
+  --bg:#0a0a0c; --bg2:#111115; --bg3:#16161c; --bg4:#1e1e26;
+  --border:rgba(255,255,255,0.07); --border2:rgba(255,255,255,0.12);
+  --text:#f0f0f4; --muted:#6b6b7a; --muted2:#4a4a58;
+  --green:#22c55e; --red:#f87171; --purple:#a855f7; --yellow:#eab308;
+  --font-d:'Rajdhani',sans-serif; --font-m:'JetBrains Mono',monospace;
+  --lap1:#e8373e; --lap2:#47c7fc;
+}
+[data-theme="mclaren"]    {--accent:#FF8000;--lap1:#FF8000;--lap2:#47C7FC;--bg:#0e0b00;--bg2:#1a1200;--bg3:#241900;--border:rgba(255,128,0,.12);--border2:rgba(255,128,0,.2)}
+[data-theme="ferrari"]    {--accent:#DC0000;--lap1:#DC0000;--lap2:#F7D117;--bg:#0e0000;--bg2:#1a0000;--bg3:#220000;--border:rgba(220,0,0,.15);--border2:rgba(220,0,0,.25)}
+[data-theme="mercedes"]   {--accent:#00D2BE;--lap1:#00D2BE;--lap2:#C0C0C0;--bg:#000e0d;--bg2:#001412;--bg3:#001a18;--border:rgba(0,210,190,.12);--border2:rgba(0,210,190,.2)}
+[data-theme="redbull"]    {--accent:#1E5BC6;--lap1:#1E5BC6;--lap2:#DC052D;--bg:#00010e;--bg2:#000318;--bg3:#000520;--border:rgba(30,91,198,.15);--border2:rgba(30,91,198,.25)}
+[data-theme="alpine"]     {--accent:#0090FF;--lap1:#0090FF;--lap2:#FF87BC;--bg:#00000e;--bg2:#000018;--bg3:#000020;--border:rgba(0,144,255,.12);--border2:rgba(0,144,255,.2)}
+[data-theme="astonmartin"]{--accent:#006F62;--lap1:#00C899;--lap2:#CEDC00;--bg:#000e0a;--bg2:#00140e;--bg3:#001a12;--border:rgba(0,111,98,.15);--border2:rgba(0,111,98,.25)}
+[data-theme="williams"]   {--accent:#005AFF;--lap1:#005AFF;--lap2:#00CFFF;--bg:#00000e;--bg2:#000018;--bg3:#000022;--border:rgba(0,90,255,.12);--border2:rgba(0,90,255,.2)}
+[data-theme="haas"]       {--accent:#E10600;--lap1:#E10600;--lap2:#fff;--bg:#0e0e0e;--bg2:#181818;--bg3:#202020;--border:rgba(255,255,255,.07);--border2:rgba(255,255,255,.12)}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-size:13px;height:100vh;display:flex;flex-direction:column;overflow:hidden}
+
+.hdr{display:flex;align-items:center;gap:16px;padding:10px 20px;background:var(--bg2);border-bottom:1px solid var(--border2);flex-shrink:0}
+.hdr-title{font-family:var(--font-d);font-size:22px;font-weight:700;letter-spacing:.04em}
+.hdr-title span{color:var(--accent)}
+.hdr-meta{font-size:11px;color:var(--muted);font-family:var(--font-m)}
+.hdr-right{margin-left:auto;display:flex;align-items:center;gap:10px}
+.cmp-sel{background:var(--bg3);color:var(--text);border:1px solid var(--border2);border-radius:4px;padding:5px 10px;font-size:11px;font-family:var(--font-d);cursor:pointer;outline:none;min-width:160px}
+.btn{background:none;border:1px solid var(--border2);color:var(--muted);border-radius:4px;padding:5px 12px;font-size:11px;cursor:pointer;white-space:nowrap;transition:all .15s}
+.btn:hover{border-color:var(--accent);color:var(--accent)}
+
+.tabs{display:flex;background:var(--bg2);border-bottom:1px solid var(--border);flex-shrink:0}
+.tab{padding:10px 20px;font-family:var(--font-d);font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .15s}
+.tab:hover{color:var(--text)}
+.tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+
+.content{flex:1;overflow:hidden;position:relative}
+.pane{display:none;height:100%;overflow-y:auto;padding:20px}
+.pane.active{display:block}
+
+/* Charts */
+.charts-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;min-height:500px}
+.chart-card{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:14px 16px;display:flex;flex-direction:column;min-height:200px}
+.chart-card.full{grid-column:1/-1;min-height:240px}
+.chart-lbl{font-family:var(--font-d);font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;flex-shrink:0}
+.chart-wrap{flex:1;position:relative;min-height:0}
+
+/* Analysis */
+.an-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+.an-card{background:var(--bg2);border:1px solid var(--border);border-radius:8px;overflow:hidden}
+.an-card.full{grid-column:1/-1}
+.an-head{padding:10px 16px;border-bottom:1px solid var(--border);font-family:var(--font-d);font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);display:flex;justify-content:space-between;align-items:center}
+.stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border)}
+.stat-cell{background:var(--bg2);padding:14px 16px;text-align:center}
+.stat-val{font-family:var(--font-d);font-size:22px;font-weight:700;color:var(--text);line-height:1}
+.stat-lbl{font-size:10px;color:var(--muted);margin-top:4px;text-transform:uppercase;letter-spacing:.05em}
+.tbl{width:100%;border-collapse:collapse;font-size:11px}
+.tbl th{text-align:left;padding:8px 12px;font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--border);white-space:nowrap}
+.tbl td{padding:7px 12px;font-family:var(--font-m);border-bottom:1px solid rgba(255,255,255,.03);white-space:nowrap}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr:hover td{background:rgba(255,255,255,.02)}
+.pos{color:var(--green)} .neg{color:var(--red)} .neut{color:var(--muted)}
+.l1{color:var(--lap1)} .l2{color:var(--lap2)}
+.trail{font-size:9px;background:rgba(168,85,247,.2);color:var(--purple);border-radius:3px;padding:1px 5px}
+.dw{height:160px;position:relative;padding:14px 16px}
+.loading{display:flex;align-items:center;justify-content:center;padding:40px;color:var(--muted);font-size:12px;gap:8px}
+.spinner{width:14px;height:14px;border:2px solid var(--border2);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div>
+    <div class="hdr-title">LAP <span id="hLap">–</span></div>
+    <div class="hdr-meta" id="hMeta">Loading…</div>
+  </div>
+  <div class="hdr-right">
+    <span style="font-size:11px;color:var(--muted)">Compare with:</span>
+    <select class="cmp-sel" id="cmpSel" onchange="onPick()">
+      <option value="">— select lap —</option>
+    </select>
+    <button class="btn" id="btnClear" onclick="clearCmp()" style="display:none">✕ Clear</button>
+  </div>
+</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="switchTab(this,'pCharts')">Charts</div>
+  <div class="tab" onclick="switchTab(this,'pAnalysis')">Analysis</div>
+</div>
+
+<div class="content">
+  <div class="pane active" id="pCharts">
+    <div class="loading" id="chartsLoad"><div class="spinner"></div> Loading…</div>
+    <div class="charts-grid" id="chartsGrid" style="display:none">
+      <div class="chart-card full"><div class="chart-lbl">Speed (km/h)</div><div class="chart-wrap"><canvas id="cSpd"></canvas></div></div>
+      <div class="chart-card"><div class="chart-lbl">Throttle &amp; Brake</div><div class="chart-wrap"><canvas id="cTB"></canvas></div></div>
+      <div class="chart-card"><div class="chart-lbl">Gear</div><div class="chart-wrap"><canvas id="cGr"></canvas></div></div>
+    </div>
+  </div>
+  <div class="pane" id="pAnalysis">
+    <div class="loading" id="anLoad"><div class="spinner"></div> Loading…</div>
+    <div id="anContent" style="display:none"></div>
+  </div>
+</div>
+
+<script>
+const P        = new URLSearchParams(location.search);
+const track    = P.get('track') || '';
+const lapNum   = parseInt(P.get('lap') || '0');
+const lapTime  = parseInt(P.get('lapTime') || '0');
+const sessDate = P.get('sessionDate') || '';
+const driver   = P.get('driver') || '';
+const allLaps  = (() => { try { return JSON.parse(decodeURIComponent(P.get('allLaps')||'[]')); } catch { return []; } })();
+if (P.get('theme')) document.documentElement.dataset.theme = P.get('theme');
+
+let pData = null, cData = null, sectorData = null, charts = {};
+
+const fmt = ms => { if (!ms||ms<=0) return '–'; const m=Math.floor(ms/60000),s=((ms%60000)/1000).toFixed(3); return m+':'+(s<10?'0':'')+s; };
+const fmtD = (v,u) => v===null||v===undefined ? '–' : (v>0?'+':'')+v+(u||'');
+const cls = v => v===null||v===undefined ? 'neut' : v>0 ? 'pos' : v<0 ? 'neg' : 'neut';
+const l1 = () => getComputedStyle(document.documentElement).getPropertyValue('--lap1').trim()||'#e8373e';
+const l2 = () => getComputedStyle(document.documentElement).getPropertyValue('--lap2').trim()||'#47c7fc';
+
+function switchTab(el, id) {
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById(id).classList.add('active');
+  if (id==='pCharts') Object.values(charts).forEach(c=>{try{c.resize()}catch{}});
+}
+
+const xSc = {ticks:{color:'#6b6b7a',font:{size:9},maxTicksLimit:12,maxRotation:0},grid:{display:false}};
+const yGr = {color:'rgba(255,255,255,0.04)'};
+const yTk = {color:'#6b6b7a',font:{family:'JetBrains Mono',size:9}};
+const base = {responsive:true,maintainAspectRatio:false,animation:{duration:300},elements:{point:{radius:0}},
+  plugins:{legend:{display:false},tooltip:{mode:'index',intersect:false,backgroundColor:'#1e1e26',borderColor:'#2a2a35',borderWidth:1,titleColor:'#6b6b7a',bodyColor:'#f0f0f4',padding:8}}};
+
+function ds(data, color, label, extra) {
+  return {data, label:label||'', borderColor:color, backgroundColor:color+'18', borderWidth:1.5, tension:0.2, fill:true, pointRadius:0, ...extra};
+}
+
+function buildCharts(p, c) {
+  Object.values(charts).forEach(ch=>{try{ch.destroy()}catch{}});
+  charts = {};
+  const ch1 = p.channels||{}, ch2 = c?.channels||{};
+  const time = p.timeAxis||[], c1=l1(), c2=l2();
+  const showLeg = !!ch2.speed?.length;
+
+  // Speed
+  const sDs = [ds(ch1.speed, c1, 'Lap '+lapNum)];
+  if (ch2.speed?.length) sDs.push(ds(ch2.speed, c2, 'Lap '+cmpLap, {borderDash:[5,3],fill:false}));
+  const maxS = Math.ceil((ch1.speed||[]).reduce((a,b)=>Math.max(a,b),0)/50)*50||350;
+  charts.spd = new Chart(document.getElementById('cSpd'), {type:'line',
+    data:{labels:time,datasets:sDs},
+    options:{...base, plugins:{...base.plugins,legend:{display:showLeg,labels:{color:'#6b6b7a',font:{size:10},boxWidth:12}}},
+      scales:{x:xSc,y:{min:0,max:maxS,ticks:{...yTk,callback:v=>v+' km/h'},grid:yGr}}}});
+
+  // TB
+  const tbDs = [];
+  if (ch1.throttle?.length) tbDs.push(ds(ch1.throttle,'#22c55e','Thr L1'));
+  if (ch1.brake?.length)    tbDs.push(ds(ch1.brake,   '#f87171','Brk L1'));
+  if (ch2.throttle?.length) tbDs.push(ds(ch2.throttle,'#22c55e88','Thr L2',{borderDash:[4,3],fill:false}));
+  if (ch2.brake?.length)    tbDs.push(ds(ch2.brake,   '#f8717188','Brk L2',{borderDash:[4,3],fill:false}));
+  if (tbDs.length) charts.tb = new Chart(document.getElementById('cTB'), {type:'line',
+    data:{labels:time,datasets:tbDs},
+    options:{...base, plugins:{...base.plugins,legend:{display:true,labels:{color:'#6b6b7a',font:{size:9},boxWidth:10,padding:6}}},
+      scales:{x:xSc,y:{min:0,max:1,ticks:{...yTk,callback:v=>Math.round(v*100)+'%'},grid:yGr}}}});
+
+  // Gear
+  if (ch1.gear?.length) {
+    const gDs = [ds(ch1.gear,c1,'Gear L1',{tension:0,stepped:true})];
+    if (ch2.gear?.length) gDs.push(ds(ch2.gear,c2,'Gear L2',{tension:0,stepped:true,borderDash:[4,3],fill:false}));
+    const maxG = Math.max(...ch1.gear,1);
+    charts.gear = new Chart(document.getElementById('cGr'), {type:'line',
+      data:{labels:time,datasets:gDs},
+      options:{...base, scales:{x:xSc,y:{min:0,max:maxG+.5,ticks:{...yTk,callback:v=>Number.isInteger(v)&&v>0?'G'+v:''},grid:yGr}}}});
+  }
+}
+
+let cmpLap = 0, cmpTime = 0;
+
+function buildSectorComparison(sectors) {
+  const s1 = sectors?.lap1, s2 = sectors?.lap2;
+  let h = '';
+
+  if (s1 || s2) {
+    const sNames = ['S1','S2','S3'];
+    const sec1 = s1?.sectors||[], sec2 = s2?.sectors||[];
+    const nSec = Math.max(sec1.length, sec2.length, 3);
+
+    h += `<div class="an-card full" style="margin-bottom:14px">
+      <div class="an-head">Sector Comparison — <span class="l1">Lap ${lapNum}</span> vs <span class="l2">Lap ${cmpLap}</span></div>
+      <table class="tbl"><thead><tr>
+        <th></th>
+        <th><span class="l1">Lap ${lapNum}</span></th>
+        <th><span class="l2">Lap ${cmpLap}</span></th>
+        <th>Delta</th>
+      </tr></thead><tbody>`;
+
+    for (let i = 0; i < nSec; i++) {
+      const t1 = sec1[i], t2 = sec2[i];
+      const delta = t1!=null && t2!=null ? t1-t2 : null;
+      const dc = delta===null ? 'neut' : delta<0 ? 'pos' : delta>0 ? 'neg' : 'neut';
+      const df = delta===null ? '–' : (delta>0?'+':'')+(delta/1000).toFixed(3)+'s';
+      h += `<tr>
+        <td style="color:var(--muted)">${sNames[i]||'S'+(i+1)}</td>
+        <td class="l1">${t1!=null?(t1/1000).toFixed(3)+'s':'–'}</td>
+        <td class="l2">${t2!=null?(t2/1000).toFixed(3)+'s':'–'}</td>
+        <td class="${dc}">${df}</td>
+      </tr>`;
+    }
+
+    const tot1=s1?.time, tot2=s2?.time;
+    const totDelta=tot1&&tot2?tot1-tot2:null;
+    const tc=totDelta===null?'neut':totDelta<0?'pos':totDelta>0?'neg':'neut';
+    const tf=totDelta===null?'–':(totDelta>0?'+':'')+(totDelta/1000).toFixed(3)+'s';
+    h += `<tr style="border-top:1px solid var(--border2)">
+      <td style="font-family:var(--font-d);font-weight:600">Lap</td>
+      <td class="l1" style="font-family:var(--font-d);font-weight:600">${fmt(tot1)}</td>
+      <td class="l2" style="font-family:var(--font-d);font-weight:600">${fmt(tot2)}</td>
+      <td class="${tc}" style="font-family:var(--font-d);font-weight:600">${tf}</td>
+    </tr>`;
+
+    h += `</tbody></table>
+      <div style="padding:8px 16px 12px;font-size:10px;color:var(--muted)">Sector times from session log. Full telemetry overlay unavailable — AC only records .tc files for the best lap.</div>
+    </div>`;
+  } else {
+    h += `<div style="padding:32px;text-align:center;color:var(--muted);font-size:12px;line-height:1.8">
+      <div style="font-size:28px;margin-bottom:12px">📂</div>
+      <div style="color:var(--text);font-family:var(--font-d);font-size:14px;margin-bottom:8px">No Comparison Data Available</div>
+      <div>AC only saves telemetry for the best lap. Sector times were not found for this lap either.</div>
+    </div>`;
+  }
+
+  return h;
+}
+
+function renderSectorPanel() {
+  if (!sectorData?.laps?.length) return '';
+  const thisLap = sectorData.laps.find(l => Math.abs(l.time - lapTime) <= 100);
+  if (!thisLap?.sectors?.length) return '';
+
+  const bests = sectorData.bestSectors || [];
+  const theoretical = sectorData.theoreticalBest || 0;
+  const secs = thisLap.sectors;
+  const lapDelta = lapTime - (sectorData.actualBest || lapTime);
+
+  let rows = secs.map((t, i) => {
+    const b = bests[i];
+    const delta = b ? t - b : null;
+    const dc = delta === null ? 'neut' : delta <= 0 ? 'pos' : 'neg';
+    const df = delta === null ? '–' : (delta > 0 ? '+' : '') + (delta/1000).toFixed(3) + 's';
+    return `<tr>
+      <td style="color:var(--muted)">S${i+1}</td>
+      <td class="l1">${(t/1000).toFixed(3)}s</td>
+      <td style="color:var(--purple)">${b ? (b/1000).toFixed(3)+'s' : '–'}</td>
+      <td class="${dc}">${df}</td>
+    </tr>`;
+  }).join('');
+
+  const totalDelta = lapTime - (sectorData.actualBest || lapTime);
+  const tdc = totalDelta <= 0 ? 'pos' : 'neg';
+  const tdf = (totalDelta > 0 ? '+' : '') + (totalDelta/1000).toFixed(3) + 's';
+
+  return `<div class="an-card full" style="margin-bottom:14px">
+    <div class="an-head">This Lap vs Session Best
+      <span style="font-weight:400;color:var(--muted)">Theoretical best ${fmt(theoretical)}</span>
+    </div>
+    <table class="tbl"><thead><tr>
+      <th></th><th>This Lap</th><th>Session Best</th><th>Delta</th>
+    </tr></thead><tbody>
+      ${rows}
+      <tr style="border-top:1px solid var(--border2)">
+        <td style="font-family:var(--font-d);font-weight:600">Lap</td>
+        <td class="l1" style="font-family:var(--font-d);font-weight:600">${fmt(lapTime)}</td>
+        <td style="color:var(--purple);font-family:var(--font-d);font-weight:600">${fmt(sectorData.actualBest)}</td>
+        <td class="${tdc}" style="font-family:var(--font-d);font-weight:600">${tdf}</td>
+      </tr>
+    </tbody></table>
+  </div>`;
+}
+
+function renderAnalysis(p, cResult) {
+  const an=p.analysis||{}, az=an.brakingZones||[], ast=an.stats||{};
+  const cmp=cResult?.comparison, cl2=cResult?.lap2;
+  const isCapt = p.tcFile?.startsWith('captured_');
+  let h = '';
+
+  h += renderSectorPanel();
+
+  h += `<div class="an-grid">
+    <div class="an-card"><div class="an-head">${isCapt ? 'Lap '+lapNum+' Overview' : 'Best Lap Overview'} <span style="font-weight:400">${fmt(p.lap?.time)}</span></div>
+      <div class="stat-grid">
+        <div class="stat-cell"><div class="stat-val">${ast.topSpeed||'–'}</div><div class="stat-lbl">Top Speed km/h</div></div>
+        <div class="stat-cell"><div class="stat-val">${ast.avgSpeed||'–'}</div><div class="stat-lbl">Avg Speed km/h</div></div>
+        <div class="stat-cell"><div class="stat-val">${ast.numBrakingZones||'–'}</div><div class="stat-lbl">Brake Zones</div></div>
+        <div class="stat-cell"><div class="stat-val">${ast.throttlePct||'–'}%</div><div class="stat-lbl">Full Throttle</div></div>
+        <div class="stat-cell"><div class="stat-val">${ast.brakePct||'–'}%</div><div class="stat-lbl">Braking</div></div>
+        <div class="stat-cell"><div class="stat-val">${ast.coastPct||'–'}%</div><div class="stat-lbl">Coasting</div></div>
+      </div></div>`;
+
+  if (cl2?.analysis?.stats) {
+    const a2=cl2.analysis.stats;
+    h += `<div class="an-card"><div class="an-head">Compare <span class="l2">${fmt(cmpTime)}</span></div>
+      <div class="stat-grid">
+        <div class="stat-cell"><div class="stat-val ${cls(ast.topSpeed-a2.topSpeed)}">${fmtD(Math.round((ast.topSpeed-a2.topSpeed)*10)/10)}</div><div class="stat-lbl">Top Spd Δ km/h</div></div>
+        <div class="stat-cell"><div class="stat-val ${cls(ast.avgSpeed-a2.avgSpeed)}">${fmtD(Math.round((ast.avgSpeed-a2.avgSpeed)*10)/10)}</div><div class="stat-lbl">Avg Spd Δ km/h</div></div>
+        <div class="stat-cell"><div class="stat-val">${fmt(cmpTime)}</div><div class="stat-lbl">Lap 2 Time</div></div>
+        <div class="stat-cell"><div class="stat-val ${cls(ast.throttlePct-a2.throttlePct)}">${fmtD(ast.throttlePct-a2.throttlePct)}%</div><div class="stat-lbl">Throttle Δ</div></div>
+        <div class="stat-cell"><div class="stat-val">${a2.numBrakingZones||'–'}</div><div class="stat-lbl">Zones L2</div></div>
+        <div class="stat-cell"><div class="stat-val ${cls(lapTime-cmpTime)}">${fmtD(Math.round((lapTime-cmpTime)/10)/100)}s</div><div class="stat-lbl">Lap Time Δ</div></div>
+      </div></div>`;
+  }
+  h += '</div>';
+
+  if (az.length) {
+    if (cmp?.matchedZones) {
+      h += `<div class="an-card full" style="margin-bottom:14px">
+        <div class="an-head">Braking Zones — <span class="l1">Lap ${lapNum} ${fmt(lapTime)}</span> vs <span class="l2">Lap ${cmpLap} ${fmt(cmpTime)}</span></div>
+        <div style="overflow-x:auto"><table class="tbl"><thead><tr>
+          <th>Zone</th><th>Pos</th>
+          <th><span class="l1">Spd In</span></th><th><span class="l2">Spd In</span></th><th>Δ In</th>
+          <th><span class="l1">Min Spd</span></th><th><span class="l2">Min Spd</span></th><th>Δ Min</th>
+          <th><span class="l1">Brake</span></th><th><span class="l2">Brake</span></th>
+          <th>Time Δ</th><th>Trail</th>
+        </tr></thead><tbody>`;
+      for (const z of cmp.matchedZones) {
+        const d2=z.lap2;
+        h += `<tr>
+          <td>Z${z.zone}</td><td class="neut">${z.brakePoint}</td>
+          <td class="l1">${z.lap1.speedIn}</td><td class="l2">${d2?d2.speedIn:'–'}</td>
+          <td class="${cls(z.deltaSpeedIn)}">${fmtD(z.deltaSpeedIn,' km/h')}</td>
+          <td class="l1">${z.lap1.speedApex}</td><td class="l2">${d2?d2.speedApex:'–'}</td>
+          <td class="${cls(z.deltaSpeedApex)}">${fmtD(z.deltaSpeedApex,' km/h')}</td>
+          <td class="l1">${z.lap1.peakBrake}%</td><td class="l2">${d2?d2.peakBrake+'%':'–'}</td>
+          <td class="${cls(z.deltaTime!==null?-z.deltaTime:null)}">${fmtD(z.deltaTime!==null?-z.deltaTime:null,'s')}</td>
+          <td>${z.lap1.trailBrake?'<span class="trail">T</span>':''}${d2?.trailBrake?'<span class="trail" style="opacity:.5">T</span>':''}</td>
+        </tr>`;
+      }
+      h += '</tbody></table></div></div>';
+      if (cmp.deltaTime) {
+        h += `<div class="an-card full" style="margin-bottom:14px">
+          <div class="an-head">Cumulative Time Delta <span style="font-weight:400;color:var(--muted)">(+ve = Lap ${lapNum} leads)</span></div>
+          <div class="dw"><canvas id="cDelta"></canvas></div></div>`;
+      }
+    } else {
+      h += `<div class="an-card full" style="margin-bottom:14px">
+        <div class="an-head">Braking Zones</div>
+        <table class="tbl"><thead><tr><th>Zone</th><th>Position</th><th>Speed In</th><th>Min Speed</th><th>Δ Speed</th><th>Peak Brake</th><th>Duration</th><th>Trail</th></tr></thead><tbody>`;
+      for (const z of az) {
+        h += `<tr><td>Z${z.index}</td><td class="neut">${z.brakePoint}</td><td>${z.speedIn} km/h</td><td>${z.speedApex} km/h</td><td class="neg">${z.speedLoss} km/h</td><td>${z.peakBrake}%</td><td>${z.duration}s</td><td>${z.trailBrake?'<span class="trail">Trail</span>':''}</td></tr>`;
+      }
+      h += '</tbody></table></div>';
+    }
+  }
+
+  document.getElementById('anContent').innerHTML = h;
+  document.getElementById('anContent').style.display = '';
+  document.getElementById('anLoad').style.display = 'none';
+
+  if (cmp?.deltaTime) {
+    const ctx = document.getElementById('cDelta');
+    if (ctx) {
+      if (charts.delta) { try{charts.delta.destroy()}catch{} }
+      charts.delta = new Chart(ctx, {type:'line',
+        data:{labels:cmp.deltaTime.map(d=>d.pos.toFixed(2)),datasets:[{
+          data:cmp.deltaTime.map(d=>d.delta),
+          segment:{borderColor:c=>c.p0.parsed.y>=0?'#22c55e':'#f87171'},
+          borderWidth:2, pointRadius:0, tension:0.3,
+          fill:{target:'origin',above:'rgba(34,197,94,0.1)',below:'rgba(248,113,113,0.1)'},
+        }]},
+        options:{responsive:true,maintainAspectRatio:false,animation:{duration:300},
+          plugins:{legend:{display:false},tooltip:{callbacks:{title:i=>'Pos: '+i[0].label,label:i=>(i.raw>0?'+':'')+i.raw.toFixed(3)+'s'}}},
+          scales:{x:{...xSc},y:{ticks:{...yTk,callback:v=>(v>0?'+':'')+v.toFixed(2)+'s'},grid:yGr}}}});
+    }
+  }
+}
+
+function populatePicker() {
+  const sel = document.getElementById('cmpSel');
+  allLaps.filter(l=>l.lap!==lapNum&&l.time>0).forEach(l=>{
+    const o=document.createElement('option');
+    o.value=l.lap; o.dataset.time=l.time;
+    o.textContent='Lap '+l.lap+' — '+fmt(l.time);
+    sel.appendChild(o);
+  });
+}
+
+async function onPick() {
+  const sel=document.getElementById('cmpSel');
+  cmpLap=parseInt(sel.value);
+  if (!cmpLap) { clearCmp(); return; }
+  cmpTime=parseInt(sel.options[sel.selectedIndex].dataset.time||'0');
+  document.getElementById('btnClear').style.display='';
+
+  // Check compare first — avoids fetching telemetry we won't use
+  document.getElementById('anLoad').style.display='';
+  document.getElementById('anContent').style.display='none';
+  const cp=new URLSearchParams({track,sessionDate:sessDate,driver,lapTime1:lapTime,lapTime2:cmpTime});
+  const cr=await fetch('/api/compare?'+cp);
+  const res=await cr.json();
+
+  if (res.error === 'no_separate_telemetry') {
+    // No separate .tc file — show sector comparison, keep charts as single lap
+    buildCharts(pData, null);
+    document.getElementById('anLoad').style.display='none';
+    document.getElementById('anContent').innerHTML = buildSectorComparison(res.sectors);
+    document.getElementById('anContent').style.display='';
+    return;
+  }
+
+  // Separate telemetry exists — fetch it and overlay charts
+  const tp=new URLSearchParams({track,lap:cmpLap,lapTime:cmpTime,sessionDate:sessDate,driver});
+  const tr=await fetch('/api/telemetry?'+tp);
+  cData=await tr.json();
+  buildCharts(pData, cData);
+  renderAnalysis(pData, res.error?null:res);
+}
+
+function clearCmp() {
+  cData=null; cmpLap=0; cmpTime=0;
+  document.getElementById('cmpSel').value='';
+  document.getElementById('btnClear').style.display='none';
+  buildCharts(pData,null);
+  renderAnalysis(pData,null);
+}
+
+document.getElementById('hLap').textContent = lapNum;
+populatePicker();
+
+async function init() {
+  const [telResp, secResp] = await Promise.all([
+    fetch('/api/telemetry?'+new URLSearchParams({track,lap:lapNum,lapTime:lapTime,sessionDate:sessDate,driver})),
+    fetch('/api/sectors?'+new URLSearchParams({track,sessionDate:sessDate})),
+  ]);
+  pData = await telResp.json();
+  sectorData = await secResp.json().catch(() => null);
+
+  if (pData.error) {
+    document.getElementById('chartsLoad').innerHTML='<div style="color:#f87171;padding:20px;font-size:12px">⚠ '+pData.error+'</div>';
+    return;
+  }
+
+  const isCaptured = pData.tcFile?.startsWith('captured_');
+  document.getElementById('hMeta').textContent =
+    fmt(lapTime) + ' · ' + (pData.car||'') + (isCaptured ? ' · 📡 captured' : ' · best lap .tc');
+
+  document.getElementById('chartsLoad').style.display='none';
+  document.getElementById('chartsGrid').style.display='';
+  buildCharts(pData,null);
+  renderAnalysis(pData,null);
+}
+init();
+</script>
+</body>
+</html>

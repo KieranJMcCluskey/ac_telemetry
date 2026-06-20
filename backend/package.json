@@ -1,0 +1,11 @@
+{
+  "name": "ac-dashboard-backend",
+  "version": "1.0.0",
+  "description": "AC Dashboard token backend – Netlify Functions",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.39.0",
+    "@upstash/ratelimit": "^1.2.0",
+    "@upstash/redis": "^1.28.0",
+    "stripe": "^14.21.0"
+  }
+}

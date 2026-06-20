@@ -1,0 +1,23 @@
+TRACK: Marina Bay Street Circuit, Singapore — Singapore Grand Prix
+Length: 5.063 km | Turns: 19 | Character: night race, street circuit, physically demanding, heavy walls
+
+KEY CORNERS (name, normalised position, type, typical gear, speed in → out):
+- T1 right             pos≈0.04  heavy braking right 3rd  320→130 km/h
+- T3 right             pos≈0.09  medium right       3rd   200→140 km/h
+- T5 right hairpin     pos≈0.15  tight hairpin      2nd   200→80 km/h   [overtaking]
+- T7-8 chicane         pos≈0.23  left-right         2nd   240→100 km/h
+- T10-11 section       pos≈0.33  medium complex     3rd   190→150 km/h
+- T13 left             pos≈0.42  tight left         2nd   200→90 km/h   [big braking, late apex]
+- T14-15 chicane       pos≈0.50  right-left         2nd   190→90 km/h
+- T16 chicane (2023+)  pos≈0.58  new chicane        2nd   260→100 km/h  [post-2022 layout]
+- T18 Anderson Bridge  pos≈0.65  right              3rd   190 km/h      [bumpy, camber change]
+- T19-21 chicane       pos≈0.73  right-left-right   2nd   230→80 km/h   [penultimate big stop]
+- T23 final right      pos≈0.85  medium right       3rd   180→210 km/h  [exit onto start straight]
+
+SECTOR SPLITS (approximate position boundaries):
+- S1: 0.00 → 0.33
+- S2: 0.33 → 0.67
+- S3: 0.67 → 1.00
+
+KEY RISKS: concrete walls throughout; T18 Anderson Bridge is bumpy; heat and humidity cause heavy tyre deg.
+COACHING PRIORITY: T5 and T13 braking zones; T23 exit for main straight; tyre management over long stint.

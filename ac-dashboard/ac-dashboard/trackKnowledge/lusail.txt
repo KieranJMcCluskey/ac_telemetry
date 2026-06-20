@@ -1,0 +1,23 @@
+TRACK: Lusail International Circuit, Qatar — Qatar Grand Prix
+Length: 5.419 km | Turns: 16 | Character: high-speed, flowing, physically demanding, high downforce
+
+KEY CORNERS (name, normalised position, type, typical gear, speed in → out):
+- T1 heavy right       pos≈0.05  heavy braking right 3rd  310→120 km/h  [main overtaking zone, DRS]
+- T2 right             pos≈0.09  medium right        4th  180→210 km/h
+- T3 right             pos≈0.14  fast right          4th  260 km/h flat
+- T4-5 left-right      pos≈0.22  chicane complex     3rd  260→140 km/h
+- T6 left sweep        pos≈0.28  fast left           5th  290 km/h flat  [near flat commitment]
+- T7-8 right-left      pos≈0.37  medium complex      3rd  250→170 km/h
+- T9 tight right       pos≈0.45  slow right hairpin  2nd  240→80 km/h   [significant braking]
+- T10-11 right-right   pos≈0.50  medium complex      3rd  200→170 km/h
+- T12 fast right       pos≈0.58  fast sweeper        4th  270 km/h
+- T14 left             pos≈0.70  medium left         3rd  230→160 km/h
+- T15-16 chicane       pos≈0.80  right-left          2nd  290→100 km/h  [final braking zone]
+
+SECTOR SPLITS (approximate position boundaries):
+- S1: 0.00 → 0.33
+- S2: 0.33 → 0.67
+- S3: 0.67 → 1.00
+
+KEY RISKS: physically demanding — sustained high-G corners cause neck fatigue; warm temperatures accelerate tyre deg.
+COACHING PRIORITY: T1 braking depth; T6 and T3 flat-out commitment; T15-16 exit for main straight.

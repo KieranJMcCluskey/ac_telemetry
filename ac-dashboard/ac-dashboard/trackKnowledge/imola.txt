@@ -1,0 +1,21 @@
+TRACK: Autodromo Enzo e Dino Ferrari, Imola — Emilia Romagna Grand Prix
+Length: 4.909 km | Turns: 19 | Character: historic, narrow, anti-clockwise flow, minimal overtaking
+
+KEY CORNERS (name, normalised position, type, typical gear, speed in → out):
+- Tamburello (T1-2)    pos≈0.07  fast chicane       4th   290→180 km/h  [site of 1994 accident]
+- Villeneuve (T3)      pos≈0.12  left-hander        3rd   200→150 km/h
+- Tosa (T5)            pos≈0.18  tight hairpin      1st   280→60 km/h   [hardest braking, overtaking]
+- Piratella (T6)       pos≈0.25  fast right         4th   250→220 km/h  [crest before, blind]
+- Acque Minerali (T7)  pos≈0.30  right-left chicane 3rd   230→150 km/h  [gravel trap outside]
+- Variante Alta (T9)   pos≈0.40  tight chicane      2nd   260→100 km/h
+- Rivazza 1 (T15)      pos≈0.68  double right       3rd   220→140 km/h
+- Rivazza 2 (T16)      pos≈0.72  right exit         3rd   140→180 km/h
+- Variante Bassa (T17) pos≈0.83  tight chicane      2nd   300→120 km/h  [final braking zone]
+
+SECTOR SPLITS (approximate position boundaries):
+- S1: 0.00 → 0.33
+- S2: 0.33 → 0.67
+- S3: 0.67 → 1.00
+
+KEY RISKS: gravel at Acque Minerali; concrete barriers at Tamburello; very narrow track overall.
+COACHING PRIORITY: Tosa braking point; Variante Alta two-part braking; Variante Bassa exit for main straight.

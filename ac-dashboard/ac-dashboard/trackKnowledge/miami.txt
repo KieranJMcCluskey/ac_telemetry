@@ -1,0 +1,20 @@
+TRACK: Miami International Autodrome, Florida
+Length: 5.412 km | Turns: 19 | Character: street-like, hard braking zones, hot conditions
+
+KEY CORNERS (name, normalised position, type, typical gear, speed in → out):
+- T1-3 complex         pos≈0.05  right-left-right   3rd   300→130 km/h  [multiple braking events]
+- T6 tight right       pos≈0.15  slow right         2nd   230→100 km/h
+- T8 right             pos≈0.23  medium right       3rd   200→150 km/h
+- T11 hairpin          pos≈0.33  180° hairpin       1st   300→70 km/h   [main overtaking zone]
+- T12-13 chicane       pos≈0.38  right-left         3rd   100→180 km/h  exit traction
+- T14-16 complex       pos≈0.48  medium sequence    3rd-4th 180-210 km/h
+- T17-18 fast right    pos≈0.58  fast sweeping      5th   270 km/h
+- T19 hairpin          pos≈0.68  tight right        2nd   270→90 km/h   [DRS zone exit]
+
+SECTOR SPLITS (approximate position boundaries):
+- S1: 0.00 → 0.35
+- S2: 0.35 → 0.67
+- S3: 0.67 → 1.00
+
+KEY RISKS: bumpy surface at T1-3; concrete barriers at T11; heat affects tyre deg significantly.
+COACHING PRIORITY: T11 hairpin braking point; T1-3 braking sequence; T17-18 full throttle commitment.

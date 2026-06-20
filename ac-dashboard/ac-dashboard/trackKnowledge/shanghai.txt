@@ -1,0 +1,21 @@
+TRACK: Shanghai International Circuit, China — Chinese Grand Prix
+Length: 5.451 km | Turns: 16 | Character: mixed speed, wide track, technical middle sector, heavy grip
+
+KEY CORNERS (name, normalised position, type, typical gear, speed in → out):
+- T1 hairpin           pos≈0.05  180° right hairpin 1st   310→70 km/h   [hardest braking, main overtaking]
+- T2 right             pos≈0.08  medium right       3rd   70→180 km/h   exit traction key
+- T3-4 long right      pos≈0.13  long sweeping right 5th  260→240 km/h  [can be flat, tyre load]
+- T6-7 chicane         pos≈0.25  left-right         3rd   240→140 km/h
+- T8 hairpin           pos≈0.33  tight left hairpin 2nd   270→90 km/h   [overtaking, DRS]
+- T9-10 right complex  pos≈0.40  right-right        4th   220→190 km/h
+- T11 right            pos≈0.47  medium right       4th   240 km/h
+- T13-16 long right    pos≈0.67  long 270° right    4th   220→200 km/h  [rear tyre deg, double apex]
+- T16 exit             pos≈0.77  right exit         4th   210→280 km/h  [exit drives back straight]
+
+SECTOR SPLITS (approximate position boundaries):
+- S1: 0.00 → 0.33
+- S2: 0.33 → 0.67
+- S3: 0.67 → 1.00
+
+KEY RISKS: T3-4 can induce understeer at speed; T13-16 long right wears rear tyres heavily.
+COACHING PRIORITY: T1 braking and trail into hairpin; T13-16 smooth steering for tyre life; T8 hairpin entry.

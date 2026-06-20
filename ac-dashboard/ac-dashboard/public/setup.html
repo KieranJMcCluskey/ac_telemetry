@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>F1 2026 MCL40 Setup Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0a0c;
+  --bg2: #111115;
+  --bg3: #16161c;
+  --bg4: #1e1e26;
+  --border: rgba(255,255,255,0.07);
+  --border2: rgba(255,255,255,0.12);
+  --accent: #e8373e;
+  --accent2: #ff6b35;
+  --text: #f0f0f4;
+  --muted: #6b6b7a;
+  --muted2: #4a4a58;
+  --green: #22c55e;
+  --yellow: #eab308;
+  --blue: #3b82f6;
+  --font-display: 'Rajdhani', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --font-body: 'Inter', sans-serif;
+}
+[data-theme="mclaren"]    { --accent:#FF8000; --accent2:#47C7FC; --bg:#0e0b00; --bg2:#1a1200; --bg3:#241900; --border:rgba(255,128,0,0.12); --border2:rgba(255,128,0,0.2); }
+[data-theme="ferrari"]    { --accent:#DC0000; --accent2:#F7D117; --bg:#0e0000; --bg2:#1a0000; --bg3:#220000; --border:rgba(220,0,0,0.15); --border2:rgba(220,0,0,0.25); }
+[data-theme="mercedes"]   { --accent:#00D2BE; --accent2:#C0C0C0; --bg:#000e0d; --bg2:#001412; --bg3:#001a18; --border:rgba(0,210,190,0.12); --border2:rgba(0,210,190,0.2); }
+[data-theme="redbull"]    { --accent:#1E5BC6; --accent2:#DC052D; --bg:#00010e; --bg2:#000318; --bg3:#000520; --border:rgba(30,91,198,0.15); --border2:rgba(30,91,198,0.25); }
+[data-theme="alpine"]     { --accent:#0090FF; --accent2:#FF87BC; --bg:#00000e; --bg2:#000018; --bg3:#000020; --border:rgba(0,144,255,0.12); --border2:rgba(0,144,255,0.2); }
+[data-theme="astonmartin"]{ --accent:#006F62; --accent2:#CEDC00; --bg:#000e0a; --bg2:#00140e; --bg3:#001a12; --border:rgba(0,111,98,0.15); --border2:rgba(0,111,98,0.25); }
+[data-theme="williams"]   { --accent:#005AFF; --accent2:#00CFFF; --bg:#00000e; --bg2:#000018; --bg3:#000022; --border:rgba(0,90,255,0.12); --border2:rgba(0,90,255,0.2); }
+[data-theme="haas"]       { --accent:#E10600; --accent2:#ffffff; --bg:#0e0e0e; --bg2:#181818; --bg3:#202020; --border:rgba(255,255,255,0.07); --border2:rgba(255,255,255,0.12); }
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--text); font-family: var(--font-body); font-size: 13px; line-height: 1.5; min-height: 100vh; }
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: var(--bg2); }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+
+.topbar {
+  display: flex; align-items: center; justify-content: space-between;
+  height: 48px; padding: 0 20px;
+  background: var(--bg2); border-bottom: 1px solid var(--border);
+  position: sticky; top: 0; z-index: 100;
+}
+.topbar-left { display: flex; align-items: center; gap: 16px; }
+.logo { font-family: var(--font-display); font-size: 20px; font-weight: 700; letter-spacing: 2px; }
+.logo span { color: var(--accent); }
+.page-title { font-family: var(--font-display); font-size: 14px; font-weight: 600; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; }
+.topbar-right { display: flex; align-items: center; gap: 12px; }
+.btn-back { background: var(--bg3); border: 1px solid var(--border2); color: var(--text); padding: 6px 12px; border-radius: 4px; font-family: var(--font-display); font-size: 12px; font-weight: 600; letter-spacing: 1px; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; }
+.btn-back:hover { border-color: var(--accent); color: var(--accent); }
+
+.main { max-width: 1100px; margin: 0 auto; padding: 24px 20px; }
+
+.track-selector-wrap { margin-bottom: 24px; }
+.track-selector-label { font-family: var(--font-display); font-size: 11px; font-weight: 600; letter-spacing: 2px; color: var(--muted); text-transform: uppercase; margin-bottom: 8px; }
+.track-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 6px; }
+.track-btn {
+  background: var(--bg2); border: 1px solid var(--border); border-radius: 6px;
+  padding: 8px 12px; cursor: pointer; text-align: left; transition: all 0.15s;
+  font-family: var(--font-body); color: var(--text);
+}
+.track-btn:hover { border-color: var(--border2); background: var(--bg3); }
+.track-btn.active { border-color: var(--accent); background: var(--bg3); }
+.track-btn .rnd { font-family: var(--font-mono); font-size: 10px; color: var(--muted); }
+.track-btn .name { font-weight: 500; font-size: 12px; margin-top: 2px; }
+.track-btn .df-badge {
+  display: inline-block; margin-top: 4px; font-size: 10px; padding: 1px 6px; border-radius: 3px;
+  font-family: var(--font-display); font-weight: 600; letter-spacing: 0.5px;
+}
+.df-low    { background: rgba(59,130,246,0.15); color: #60a5fa; }
+.df-lowmed { background: rgba(59,130,246,0.2);  color: #93c5fd; }
+.df-medium { background: rgba(234,179,8,0.15);  color: #fbbf24; }
+.df-medhigh{ background: rgba(249,115,22,0.2);  color: #fb923c; }
+.df-high   { background: rgba(239,68,68,0.2);   color: #f87171; }
+.df-max    { background: rgba(168,85,247,0.2);  color: #c084fc; }
+
+.setup-panel { display: none; }
+.setup-panel.visible { display: block; }
+.setup-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 20px; flex-wrap: wrap; gap: 12px; }
+.setup-track-name { font-family: var(--font-display); font-size: 28px; font-weight: 700; line-height: 1; }
+.setup-track-name span { color: var(--accent); }
+.setup-circuit { font-size: 13px; color: var(--muted); margin-top: 4px; }
+.setup-char { font-size: 12px; color: var(--muted2); font-style: italic; margin-top: 2px; }
+.setup-round { font-family: var(--font-mono); font-size: 11px; color: var(--muted); }
+
+.setup-table-wrap { background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin-bottom: 16px; }
+.setup-table { width: 100%; border-collapse: collapse; }
+.setup-table thead th {
+  background: var(--bg3); padding: 10px 16px; text-align: left;
+  font-family: var(--font-display); font-size: 12px; font-weight: 700;
+  letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted);
+  border-bottom: 1px solid var(--border2);
+}
+.setup-table thead th:not(:first-child) { text-align: center; }
+.setup-table tbody tr { border-bottom: 1px solid var(--border); }
+.setup-table tbody tr:last-child { border-bottom: none; }
+.setup-table tbody tr:hover { background: var(--bg3); }
+.setup-table td { padding: 9px 16px; }
+.setup-table td.param { font-size: 12px; color: var(--text); font-weight: 500; }
+.setup-table td.param .range { font-size: 10px; color: var(--muted); font-family: var(--font-mono); }
+.setup-table td.val { text-align: center; font-family: var(--font-mono); font-size: 13px; font-weight: 500; }
+.setup-table td.val-q { color: var(--accent); }
+.setup-table td.val-r { color: var(--accent2); }
+
+.group-header td {
+  background: var(--bg3) !important; padding: 6px 16px;
+  font-family: var(--font-display); font-size: 10px; font-weight: 700;
+  letter-spacing: 2px; text-transform: uppercase; color: var(--muted2);
+  border-bottom: 1px solid var(--border) !important;
+}
+
+.race-note {
+  background: var(--bg2); border: 1px solid var(--border); border-left: 3px solid var(--accent);
+  border-radius: 6px; padding: 14px 16px; margin-bottom: 16px;
+}
+.race-note-label { font-family: var(--font-display); font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--accent); margin-bottom: 4px; }
+.race-note-text { font-size: 12px; color: var(--muted); line-height: 1.6; }
+
+.disclaimer { font-size: 11px; color: var(--muted2); font-style: italic; text-align: center; margin-top: 8px; }
+
+.bar-cell { position: relative; }
+.bar-track { position: absolute; bottom: 6px; left: 16px; right: 16px; height: 2px; background: var(--border); border-radius: 1px; }
+.bar-fill { position: absolute; top: 0; left: 0; height: 100%; border-radius: 1px; }
+.bar-q { background: var(--accent); }
+.bar-r { background: var(--accent2); }
+
+select { background:var(--bg2);color:var(--text);border:1px solid var(--border2);border-radius:4px;padding:4px 8px;font-size:11px;font-family:var(--font-display);cursor:pointer;outline:none; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-left">
+    <div class="logo">AC<span>.</span>SESSION</div>
+    <div class="page-title">F1 2026 MCL40 Setup Guide</div>
+  </div>
+  <div class="topbar-right">
+    <select id="themeSelect" onchange="setTheme(this.value)" title="Team Theme">
+      <option value="">🏁 Default</option>
+      <option value="mclaren">🟠 McLaren</option>
+      <option value="ferrari">🔴 Ferrari</option>
+      <option value="mercedes">🩵 Mercedes</option>
+      <option value="redbull">🔵 Red Bull</option>
+      <option value="alpine">💙 Alpine</option>
+      <option value="astonmartin">🟢 Aston Martin</option>
+      <option value="williams">🫐 Williams</option>
+      <option value="haas">⚫ Haas</option>
+    </select>
+    <a href="/" class="btn-back">← Dashboard</a>
+  </div>
+</div>
+
+<div class="main">
+  <div class="track-selector-wrap">
+    <div class="track-selector-label">Select Grand Prix</div>
+    <div class="track-grid" id="trackGrid"></div>
+  </div>
+  <div class="setup-panel" id="setupPanel">
+    <div class="setup-header">
+      <div>
+        <div class="setup-round" id="setupRound"></div>
+        <div class="setup-track-name" id="setupName"></div>
+        <div class="setup-circuit" id="setupCircuit"></div>
+        <div class="setup-char" id="setupChar"></div>
+      </div>
+    </div>
+    <div class="setup-table-wrap">
+      <table class="setup-table">
+        <thead>
+          <tr>
+            <th style="width:50%">Parameter</th>
+            <th style="width:25%">🟡 Qualifying</th>
+            <th style="width:25%">🏁 Race</th>
+          </tr>
+        </thead>
+        <tbody id="setupTableBody"></tbody>
+      </table>
+    </div>
+    <div class="race-note" id="raceNote" style="display:none">
+      <div class="race-note-label">Race Tuning Note</div>
+      <div class="race-note-text" id="raceNoteText"></div>
+    </div>
+    <div class="disclaimer">Sim Dream MCL40 baselines — sensible starting points, not verified telemetry. Tune in practice.</div>
+  </div>
+</div>
+
+<script>
+const SETUP_DATA = [
+  { rnd:1,  name:"Australian GP",     circuit:"Albert Park, Melbourne",         df:"Med-High",  char:"Semi-street, flowing mid-speed, walls close, slippery early grip",
+    q:{ fw:14, rw:18, bb:58, dp:70, dc:45, dpl:80, pfr:22.5, pre:21.5, rhf:180, rhr:200, arbf:72000, arbr:18000, cf:-3.4, cr:-2.0 },
+    r:{ fw:16, rw:20, bb:56, dp:60, dc:50, dpl:90, pfr:23.5, pre:22.5, rhf:210, rhr:240, arbf:72000, arbr:20000, cf:-3.0, cr:-1.8 },
+    note:"Track rubbers in fast; left-front works hard through the fast esses. Protect fronts." },
+  { rnd:2,  name:"Chinese GP",        circuit:"Shanghai International",          df:"Med-High",  char:"Long back straight + tight hairpin, the long T1-2 spiral, front-tyre hard",
+    q:{ fw:13, rw:17, bb:59, dp:72, dc:44, dpl:80, pfr:22.5, pre:21.5, rhf:200, rhr:220, arbf:72000, arbr:18000, cf:-3.4, cr:-2.0 },
+    r:{ fw:15, rw:19, bb:57, dp:60, dc:50, dpl:90, pfr:23.5, pre:22.5, rhf:230, rhr:260, arbf:72000, arbr:20000, cf:-3.0, cr:-1.8 },
+    note:"Sprint weekend. Front-left graining risk. Trim a click of front wing for the straight." },
+  { rnd:3,  name:"Japanese GP",       circuit:"Suzuka",                          df:"High",      char:"Flowing figure-8, fast esses, 130R, balance + tyre-temp critical",
+    q:{ fw:18, rw:22, bb:57, dp:66, dc:48, dpl:90, pfr:22.0, pre:21.0, rhf:170, rhr:190, arbf:80000, arbr:21000, cf:-3.6, cr:-2.2 },
+    r:{ fw:20, rw:24, bb:55, dp:56, dc:52, dpl:100,pfr:23.0, pre:22.0, rhf:200, rhr:230, arbf:80000, arbr:23000, cf:-3.2, cr:-2.0 },
+    note:"High energy all four corners. Aim neutral-to-slight understeer for the esses." },
+  { rnd:4,  name:"Bahrain GP",        circuit:"Sakhir",                          df:"Medium",    char:"Heavy braking, traction off slow corners, abrasive, rear-limited",
+    q:{ fw:12, rw:15, bb:60, dp:74, dc:42, dpl:80, pfr:22.5, pre:22.0, rhf:190, rhr:210, arbf:66000, arbr:17000, cf:-3.2, cr:-1.9 },
+    r:{ fw:14, rw:17, bb:58, dp:62, dc:48, dpl:90, pfr:23.5, pre:23.0, rhf:220, rhr:250, arbf:66000, arbr:19000, cf:-2.8, cr:-1.7 },
+    note:"Rear deg is the story. Soften diff power, add rear pressure to survive the stint." },
+  { rnd:5,  name:"Saudi Arabian GP",  circuit:"Jeddah Corniche",                 df:"Low-Med",   char:"Ultra-fast street, flowing walls, low-drag friendly, stability key",
+    q:{ fw:9,  rw:12, bb:59, dp:68, dc:46, dpl:80, pfr:22.0, pre:21.5, rhf:190, rhr:210, arbf:72000, arbr:19000, cf:-3.2, cr:-1.9 },
+    r:{ fw:11, rw:15, bb:57, dp:58, dc:52, dpl:90, pfr:23.0, pre:22.5, rhf:220, rhr:250, arbf:72000, arbr:21000, cf:-2.8, cr:-1.7 },
+    note:"Stability over walls beats peak rotation. Don't strip wing too far or it gets nervous." },
+  { rnd:6,  name:"Miami GP",          circuit:"Miami International Autodrome",   df:"Medium",    char:"Slow chicane sector + long straights, low grip, tyre temp tricky",
+    q:{ fw:13, rw:16, bb:59, dp:72, dc:44, dpl:80, pfr:22.5, pre:21.5, rhf:200, rhr:220, arbf:72000, arbr:18000, cf:-3.3, cr:-2.0 },
+    r:{ fw:15, rw:18, bb:57, dp:60, dc:50, dpl:90, pfr:23.5, pre:22.5, rhf:230, rhr:260, arbf:72000, arbr:20000, cf:-2.9, cr:-1.8 },
+    note:"Sprint weekend. Sector 3 chicanes vs straights = compromise wing. Surface stays green." },
+  { rnd:7,  name:"Canadian GP",       circuit:"Circuit Gilles Villeneuve",       df:"Low-Med",   char:"Stop-go, big braking, traction out of chicanes, kerb-heavy",
+    q:{ fw:10, rw:13, bb:61, dp:76, dc:42, dpl:70, pfr:22.0, pre:21.5, rhf:210, rhr:230, arbf:66000, arbr:17000, cf:-3.0, cr:-1.8 },
+    r:{ fw:12, rw:16, bb:59, dp:64, dc:48, dpl:80, pfr:23.0, pre:22.5, rhf:250, rhr:280, arbf:66000, arbr:19000, cf:-2.6, cr:-1.6 },
+    note:"Sprint weekend. Brakes + traction limited. Ride higher for kerbs, watch front locking into the hairpin." },
+  { rnd:8,  name:"Monaco GP",         circuit:"Circuit de Monaco",               df:"Maximum",   char:"Slowest/tightest, max downforce, mechanical grip + kerb riding",
+    q:{ fw:21, rw:30, bb:56, dp:60, dc:48, dpl:60, pfr:21.5, pre:20.5, rhf:260, rhr:290, arbf:90000, arbr:24000, cf:-3.6, cr:-2.2 },
+    r:{ fw:22, rw:31, bb:55, dp:54, dc:52, dpl:70, pfr:22.0, pre:21.0, rhf:280, rhr:310, arbf:90000, arbr:26000, cf:-3.4, cr:-2.0 },
+    note:"Max aero. Soft diff, high ride height for kerbs. Race is tyre warmth + patience." },
+  { rnd:9,  name:"Spanish GP (Barcelona)", circuit:"Circuit de Catalunya",        df:"High",      char:"Aero benchmark, long T3, deg-heavy, front-left punished",
+    q:{ fw:18, rw:22, bb:57, dp:68, dc:44, dpl:90, pfr:22.5, pre:21.5, rhf:180, rhr:200, arbf:82000, arbr:22000, cf:-3.6, cr:-2.2 },
+    r:{ fw:20, rw:24, bb:55, dp:58, dc:50, dpl:100,pfr:23.5, pre:22.5, rhf:210, rhr:240, arbf:82000, arbr:24000, cf:-3.2, cr:-2.0 },
+    note:"The deg circuit. Race balance slightly understeery to save the front-left through T3/T9." },
+  { rnd:10, name:"Austrian GP",       circuit:"Red Bull Ring",                   df:"Medium",    char:"Short lap, big elevation, traction-zones, kerb-aggressive, power-sensitive",
+    q:{ fw:12, rw:15, bb:59, dp:74, dc:42, dpl:70, pfr:22.0, pre:21.5, rhf:200, rhr:220, arbf:70000, arbr:18000, cf:-3.2, cr:-1.9 },
+    r:{ fw:14, rw:18, bb:57, dp:62, dc:48, dpl:80, pfr:23.0, pre:22.5, rhf:240, rhr:270, arbf:70000, arbr:20000, cf:-2.8, cr:-1.7 },
+    note:"Traction zones dominate. Soften diff power off T1/T3/T4. Big kerbs need height + compliance." },
+  { rnd:11, name:"British GP",        circuit:"Silverstone",                     df:"High",      char:"Fast flowing Maggotts/Becketts, high-energy, rewards downforce",
+    q:{ fw:17, rw:21, bb:57, dp:66, dc:46, dpl:90, pfr:22.0, pre:21.0, rhf:170, rhr:190, arbf:80000, arbr:21000, cf:-3.5, cr:-2.1 },
+    r:{ fw:19, rw:23, bb:55, dp:56, dc:50, dpl:100,pfr:23.0, pre:22.0, rhf:200, rhr:230, arbf:80000, arbr:23000, cf:-3.1, cr:-1.9 },
+    note:"Sprint weekend — limited practice, baseline matters more. High-speed stability is everything." },
+  { rnd:12, name:"Belgian GP",        circuit:"Spa-Francorchamps",               df:"Low-Med",   char:"Longest lap, Eau Rouge flat, long straight then technical S2, weather wildcard",
+    q:{ fw:11, rw:14, bb:58, dp:68, dc:46, dpl:80, pfr:22.0, pre:21.0, rhf:180, rhr:200, arbf:74000, arbr:19000, cf:-3.3, cr:-2.0 },
+    r:{ fw:14, rw:18, bb:56, dp:58, dc:50, dpl:90, pfr:23.0, pre:22.0, rhf:220, rhr:250, arbf:74000, arbr:21000, cf:-2.9, cr:-1.8 },
+    note:"Classic Spa wing compromise: enough for S2 without killing the Kemmel straight. Split the difference." },
+  { rnd:13, name:"Hungarian GP",      circuit:"Hungaroring",                     df:"Maximum",   char:"Twisty, no straights, mechanical grip + high downforce, hot",
+    q:{ fw:20, rw:28, bb:57, dp:62, dc:46, dpl:70, pfr:22.0, pre:21.0, rhf:210, rhr:230, arbf:86000, arbr:23000, cf:-3.5, cr:-2.1 },
+    r:{ fw:21, rw:29, bb:55, dp:56, dc:50, dpl:80, pfr:23.0, pre:22.0, rhf:240, rhr:270, arbf:86000, arbr:25000, cf:-3.3, cr:-1.9 },
+    note:"Near-max wing. Overheats tyres + brakes; manage temps. Rotation off slow corners wins the lap." },
+  { rnd:14, name:"Dutch GP",          circuit:"Zandvoort",                       df:"High",      char:"Banked corners T3/T14, flowing, narrow, banked-load specific",
+    q:{ fw:18, rw:22, bb:57, dp:66, dc:48, dpl:90, pfr:22.0, pre:21.0, rhf:170, rhr:190, arbf:80000, arbr:21000, cf:-3.6, cr:-2.2 },
+    r:{ fw:20, rw:24, bb:55, dp:56, dc:52, dpl:100,pfr:23.0, pre:22.0, rhf:200, rhr:230, arbf:80000, arbr:23000, cf:-3.2, cr:-2.0 },
+    note:"Sprint weekend. Banking loads tyres hard — don't run pressures too low or they overheat." },
+  { rnd:15, name:"Spanish GP (Madrid)", circuit:"Madring, Madrid",               df:"Medium",    char:"NEW part-street circuit, street tightness + faster sections, banked turn",
+    q:{ fw:14, rw:18, bb:58, dp:68, dc:44, dpl:80, pfr:22.5, pre:21.5, rhf:200, rhr:220, arbf:74000, arbr:19000, cf:-3.3, cr:-2.0 },
+    r:{ fw:16, rw:20, bb:56, dp:58, dc:50, dpl:90, pfr:23.5, pre:22.5, rhf:230, rhr:260, arbf:74000, arbr:21000, cf:-2.9, cr:-1.8 },
+    note:"Brand new layout — treat as a true starting point and expect to move it a lot in practice." },
+  { rnd:16, name:"Azerbaijan GP",     circuit:"Baku City Circuit",               df:"Low",       char:"Longest straight + tight castle section, lowest-drag wins",
+    q:{ fw:8,  rw:11, bb:60, dp:70, dc:44, dpl:70, pfr:22.0, pre:21.5, rhf:210, rhr:230, arbf:68000, arbr:18000, cf:-3.0, cr:-1.8 },
+    r:{ fw:10, rw:14, bb:58, dp:60, dc:48, dpl:80, pfr:23.0, pre:22.5, rhf:250, rhr:280, arbf:68000, arbr:20000, cf:-2.6, cr:-1.6 },
+    note:"Trim wing hard for the straight but keep front for the old-town section. Walls everywhere." },
+  { rnd:17, name:"Singapore GP",      circuit:"Marina Bay",                      df:"Maximum",   char:"Longest race, hot/humid, bumpy street, max downforce + traction, brutal",
+    q:{ fw:20, rw:28, bb:57, dp:62, dc:46, dpl:70, pfr:22.0, pre:21.0, rhf:240, rhr:270, arbf:88000, arbr:24000, cf:-3.4, cr:-2.0 },
+    r:{ fw:21, rw:29, bb:55, dp:56, dc:50, dpl:80, pfr:23.0, pre:22.0, rhf:270, rhr:300, arbf:88000, arbr:26000, cf:-3.2, cr:-1.9 },
+    note:"Sprint weekend + endurance race. High ride height for bumps, soft diff for traction, save the brakes." },
+  { rnd:18, name:"United States GP",  circuit:"COTA, Austin",                    df:"Med-High",  char:"Esses sector T3-6, big braking T1/T11, bumpy, multi-discipline lap",
+    q:{ fw:16, rw:20, bb:57, dp:68, dc:44, dpl:80, pfr:22.0, pre:21.0, rhf:190, rhr:210, arbf:76000, arbr:20000, cf:-3.4, cr:-2.1 },
+    r:{ fw:18, rw:22, bb:55, dp:58, dc:48, dpl:90, pfr:23.0, pre:22.0, rhf:220, rhr:250, arbf:76000, arbr:22000, cf:-3.0, cr:-1.9 },
+    note:"Bumps unsettle the rear on braking — a hair more rear wing/height than pure aero math suggests." },
+  { rnd:19, name:"Mexico City GP",    circuit:"Aut. Hermanos Rodriguez",          df:"Med*",      char:"Altitude = LOW effective downforce despite high wing, long straight, stadium",
+    q:{ fw:20, rw:28, bb:58, dp:72, dc:44, dpl:80, pfr:22.0, pre:21.0, rhf:190, rhr:210, arbf:76000, arbr:20000, cf:-3.2, cr:-1.9 },
+    r:{ fw:21, rw:29, bb:56, dp:60, dc:48, dpl:90, pfr:23.0, pre:22.0, rhf:220, rhr:250, arbf:76000, arbr:22000, cf:-2.8, cr:-1.7 },
+    note:"Altitude trick: run a HIGH wing number — thin air gives less actual downforce. Cooling/brakes suffer." },
+  { rnd:20, name:"Brazilian GP",      circuit:"Interlagos, São Paulo",            df:"Medium",    char:"Short, anti-clockwise, flowing S-curves + climb, bumpy, weather wildcard",
+    q:{ fw:14, rw:18, bb:58, dp:70, dc:44, dpl:80, pfr:22.0, pre:21.0, rhf:190, rhr:210, arbf:74000, arbr:19000, cf:-3.3, cr:-2.0 },
+    r:{ fw:16, rw:20, bb:56, dp:60, dc:48, dpl:90, pfr:23.0, pre:22.0, rhf:220, rhr:250, arbf:74000, arbr:21000, cf:-2.9, cr:-1.8 },
+    note:"Anti-clockwise loads the right-front. Bumpy uphill drag straight rewards a slightly trimmed rear." },
+  { rnd:21, name:"Las Vegas GP",      circuit:"Las Vegas Strip",                  df:"Low",       char:"Long Strip straights, cold night = tyre-warmup nightmare, low-drag",
+    q:{ fw:8,  rw:11, bb:59, dp:68, dc:46, dpl:70, pfr:23.0, pre:22.5, rhf:200, rhr:220, arbf:70000, arbr:18000, cf:-2.8, cr:-1.6 },
+    r:{ fw:10, rw:14, bb:57, dp:58, dc:50, dpl:80, pfr:24.0, pre:23.5, rhf:230, rhr:260, arbf:70000, arbr:20000, cf:-2.4, cr:-1.4 },
+    note:"Cold-track tyre warm-up is the whole game. Lower wing for straights but you must build heat for grip." },
+  { rnd:22, name:"Qatar GP",          circuit:"Lusail International",             df:"High",      char:"Fast flowing medium-high corners, smooth, high lateral energy, tyre stress",
+    q:{ fw:18, rw:22, bb:57, dp:66, dc:46, dpl:90, pfr:22.0, pre:21.0, rhf:170, rhr:190, arbf:82000, arbr:22000, cf:-3.6, cr:-2.2 },
+    r:{ fw:20, rw:24, bb:55, dp:56, dc:50, dpl:100,pfr:23.0, pre:22.0, rhf:200, rhr:230, arbf:82000, arbr:24000, cf:-3.2, cr:-2.0 },
+    note:"Constant high lateral load cooks tyres — pressures + deg management dominate the race setup." },
+  { rnd:23, name:"Abu Dhabi GP",      circuit:"Yas Marina",                       df:"Medium",    char:"Long straights + traction-zone slow corners, smooth, evening temp drop, finale",
+    q:{ fw:14, rw:18, bb:58, dp:70, dc:44, dpl:80, pfr:22.0, pre:21.0, rhf:190, rhr:210, arbf:74000, arbr:19000, cf:-3.3, cr:-2.0 },
+    r:{ fw:16, rw:20, bb:56, dp:60, dc:48, dpl:90, pfr:23.0, pre:22.0, rhf:220, rhr:250, arbf:74000, arbr:21000, cf:-2.9, cr:-1.8 },
+    note:"Compromise lap: straights want low drag, slow final sector wants traction. Soft diff for the 90s." },
+];
+
+const PARAMS = [
+  { group: "Aerodynamics" },
+  { key:"fw",  label:"Front Wing",          range:"2–23" },
+  { key:"rw",  label:"Rear Wing",           range:"6.8–32" },
+  { group: "Brakes & Differential" },
+  { key:"bb",  label:"Brake Bias % fwd",    range:"48–68%",  unit:"%" },
+  { key:"dp",  label:"Diff Power %",        range:"0–100%",  unit:"%" },
+  { key:"dc",  label:"Diff Coast %",        range:"0–100%",  unit:"%" },
+  { key:"dpl", label:"Diff Preload",        range:"0–200" },
+  { group: "Tyre Pressures" },
+  { key:"pfr", label:"Pressure Front PSI",  range:"10–24 PSI", unit:" PSI" },
+  { key:"pre", label:"Pressure Rear PSI",   range:"10–24 PSI", unit:" PSI" },
+  { group: "Suspension" },
+  { key:"rhf", label:"Ride Height Front",   range:"100–500" },
+  { key:"rhr", label:"Ride Height Rear",    range:"100–500" },
+  { key:"arbf",label:"ARB Front",           range:"30k–100k", fmt: v => (v/1000).toFixed(0)+'k' },
+  { key:"arbr",label:"ARB Rear",            range:"5k–30k",   fmt: v => (v/1000).toFixed(0)+'k' },
+  { key:"cf",  label:"Camber Front",        range:"-4.2 to 1", unit:"°" },
+  { key:"cr",  label:"Camber Rear",         range:"-2.6 to 0", unit:"°" },
+];
+
+const DF_CLASS = { "Low":"df-low","Low-Med":"df-lowmed","Medium":"df-medium","Med-High":"df-medhigh","High":"df-high","Maximum":"df-max","Med*":"df-medhigh" };
+
+let currentTrack = null;
+
+function setTheme(t) {
+  document.body.setAttribute('data-theme', t);
+  localStorage.setItem('ac-theme', t);
+}
+
+function init() {
+  const saved = localStorage.getItem('ac-theme') || '';
+  document.getElementById('themeSelect').value = saved;
+  setTheme(saved);
+
+  const grid = document.getElementById('trackGrid');
+  SETUP_DATA.forEach((t, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'track-btn';
+    btn.innerHTML = `<div class="rnd">R${String(t.rnd).padStart(2,'0')}</div><div class="name">${t.name}</div><span class="df-badge ${DF_CLASS[t.df]||'df-medium'}">${t.df}</span>`;
+    btn.onclick = () => selectTrack(i, btn);
+    grid.appendChild(btn);
+  });
+}
+
+function fmtVal(p, v) {
+  if (p.fmt) return p.fmt(v);
+  const s = typeof v === 'number' ? (Number.isInteger(v) ? v : v.toFixed(1)) : v;
+  return s + (p.unit || '');
+}
+
+function getRangeNorm(p) {
+  // Returns [min, max] for bar normalisation
+  const rangeMap = { fw:[2,23], rw:[6.8,32], bb:[48,68], dp:[0,100], dc:[0,100], dpl:[0,200], pfr:[10,24], pre:[10,24], rhf:[100,500], rhr:[100,500], arbf:[30000,100000], arbr:[5000,30000], cf:[-4.2,1], cr:[-2.6,0] };
+  return rangeMap[p.key] || null;
+}
+
+function selectTrack(idx, btn) {
+  document.querySelectorAll('.track-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  const t = SETUP_DATA[idx];
+  currentTrack = t;
+
+  document.getElementById('setupRound').textContent = `Round ${t.rnd} of 23 — 2026 Season`;
+  document.getElementById('setupName').innerHTML = t.name.replace(/GP$/, '<span>GP</span>');
+  document.getElementById('setupCircuit').textContent = t.circuit;
+  document.getElementById('setupChar').textContent = t.char;
+
+  const tbody = document.getElementById('setupTableBody');
+  tbody.innerHTML = '';
+  PARAMS.forEach(p => {
+    if (p.group) {
+      const tr = document.createElement('tr');
+      tr.className = 'group-header';
+      tr.innerHTML = `<td colspan="3">${p.group}</td>`;
+      tbody.appendChild(tr);
+      return;
+    }
+    const qv = t.q[p.key], rv = t.r[p.key];
+    const rng = getRangeNorm(p);
+    let barHtml = '';
+    if (rng) {
+      const span = rng[1] - rng[0];
+      const qPct = ((qv - rng[0]) / span * 100).toFixed(1);
+      const rPct = ((rv - rng[0]) / span * 100).toFixed(1);
+      barHtml = `<div class="bar-track"><div class="bar-fill bar-q" style="width:${qPct}%"></div></div>`;
+    }
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td class="param"><div>${p.label}</div><div class="range">${p.range}</div></td>
+      <td class="val val-q bar-cell">${fmtVal(p, qv)}${barHtml}</td>
+      <td class="val val-r">${fmtVal(p, rv)}</td>`;
+    tbody.appendChild(tr);
+  });
+
+  const noteEl = document.getElementById('raceNote');
+  if (t.note) {
+    document.getElementById('raceNoteText').textContent = t.note;
+    noteEl.style.display = '';
+  } else { noteEl.style.display = 'none'; }
+
+  document.getElementById('setupPanel').classList.add('visible');
+  document.getElementById('setupPanel').scrollIntoView({ behavior:'smooth', block:'nearest' });
+}
+
+init();
+</script>
+</body>
+</html>

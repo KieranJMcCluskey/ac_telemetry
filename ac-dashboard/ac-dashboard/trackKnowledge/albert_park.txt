@@ -1,0 +1,23 @@
+TRACK: Albert Park, Melbourne — Australian Grand Prix
+Length: 5.278 km | Turns: 16 | Character: semi-street, resurfaced 2022, fast but wall-lined
+
+KEY CORNERS (name, normalised position, type, typical gear, speed in → out):
+- T1 right-hander      pos≈0.07  heavy braking      3rd   290→150 km/h  [DRS zone entry]
+- T2-3 chicane         pos≈0.10  right-left         3rd   170→130 km/h
+- T4 tight right       pos≈0.15  slow right         2nd   180→90 km/h   [overtaking]
+- T6 fast right        pos≈0.23  fast sweeper       5th   250 km/h flat
+- T7 fast right        pos≈0.27  fast sweeper       5th   240 km/h
+- T9-10 chicane        pos≈0.35  right-left         3rd   230→140 km/h
+- T11-12 fast sweepers pos≈0.43  high-speed         5th   260 km/h
+- T13 hairpin          pos≈0.48  heaviest braking   2nd   310→80 km/h   [overtaking, hardest]
+- T14 right exit       pos≈0.51  medium right       3rd   90→180 km/h
+- T15 right            pos≈0.58  medium right       3rd   200→160 km/h
+- T16 long sweeper     pos≈0.70  fast left sweeper  5th   270 km/h      [rear stability]
+
+SECTOR SPLITS (approximate position boundaries):
+- S1: 0.00 → 0.33
+- S2: 0.33 → 0.67
+- S3: 0.67 → 1.00
+
+KEY RISKS: walls at T1 (right exit), T4 (inside), T13 (both sides). Limited run-off.
+COACHING PRIORITY: T13 braking point + exit; T4 tight right commitment; T6-7 flat-out courage.

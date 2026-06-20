@@ -1,0 +1,13 @@
+{
+  "name": "ac-session-dashboard",
+  "version": "1.0.0",
+  "description": "Assetto Corsa Content Manager session dashboard",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": [],
+  "author": "kieran.mccluskey",
+  "license": "MIT"
+}
