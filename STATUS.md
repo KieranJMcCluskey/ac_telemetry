@@ -126,3 +126,97 @@ The server code (`handleCompare`) already checks captured laps first, then .tc f
 7. Check `captured/` folder for JSON files
 8. Open `localhost:3000`, pick a session, click a lap, use the Compare dropdown
 9. Charts, braking zones, and cumulative delta should all appear
+
+---
+
+## Backend Setup (AI Coaching Tokens)
+
+The `backend/` folder is a **Netlify Functions** app that sells coaching tokens.
+The code is complete — setup is purely provisioning external services and env vars.
+
+Deployed function URLs (after deploy):
+`https://<your-site>.netlify.app/.netlify/functions/{auth,checkout,webhook,tokens,coach}`
+
+| Function | Job |
+|---|---|
+| `auth.js` | Register/login via Supabase email+password → returns access token |
+| `checkout.js` | Creates a Stripe Checkout session for a 10- or 100-token pack |
+| `webhook.js` | Stripe → credits tokens (idempotent on `checkout.session.completed`) |
+| `tokens.js` | Returns the user's current balance |
+| `coach.js` | Checks balance → calls Claude (`claude-sonnet-4-6`) → deducts 1 token |
+
+### 1. Supabase
+1. New project → **Settings → API**: copy Project URL (`SUPABASE_URL`),
+   `anon public` key (`SUPABASE_ANON_KEY`), `service_role` key (`SUPABASE_SERVICE_KEY` — server only).
+2. **SQL Editor** → run `backend/supabase/schema.sql` (tables + atomic
+   `deduct_token` / `credit_tokens` functions).
+3. **Authentication → Providers → Email**: enable. Decide on "Confirm email"
+   (if ON, users must verify before login/buy). Set **Site URL** to the Netlify URL.
+
+### 2. Anthropic
+- **API Keys → Create Key** → `ANTHROPIC_API_KEY`. Ensure workspace has billing/credit.
+
+### 3. Stripe (live mode)
+1. **Products** → create two one-time prices:
+   - "10 Coaching Tokens" → Price ID → `STRIPE_PRICE_10`
+   - "100 Coaching Tokens" → Price ID → `STRIPE_PRICE_100`
+2. **Developers → API keys** → Secret key (`sk_live_...`) → `STRIPE_SECRET_KEY`
+3. **Developers → Webhooks → Add endpoint** (do this *after* first deploy, once the URL exists):
+   - URL: `https://<your-site>.netlify.app/.netlify/functions/webhook`
+   - Event: **`checkout.session.completed`** only
+   - Signing secret (`whsec_...`) → `STRIPE_WEBHOOK_SECRET`, then redeploy.
+
+### 4. Netlify env vars (Site settings → Environment variables)
+```
+SUPABASE_URL, SUPABASE_ANON_KEY, SUPABASE_SERVICE_KEY,
+ANTHROPIC_API_KEY,
+STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET, STRIPE_PRICE_10, STRIPE_PRICE_100,
+SITE_URL            ← https://<your-site>.netlify.app  (Stripe success/cancel redirects)
+```
+Upstash Redis pair (`UPSTASH_REDIS_REST_URL`, `UPSTASH_REDIS_REST_TOKEN`) is optional —
+without it, rate limiting is silently skipped.
+
+### 5. Deploy
+`backend/netlify.toml` sets `functions = "netlify/functions"`, `publish = "public"`.
+Point Netlify's **base directory at `backend/`**, or CLI from `backend/`:
+```
+netlify deploy --prod
+```
+Then finish Stripe step 3 (webhook URL + secret) and redeploy.
+
+### 6. Smoke test (live)
+```bash
+# register
+curl -sX POST https://<site>/.netlify/functions/auth \
+  -H 'content-type: application/json' \
+  -d '{"action":"register","email":"you@x.com","password":"..."}'
+# login (action:"login") → grab accessToken
+# balance (should be 0)
+curl -s https://<site>/.netlify/functions/tokens -H "authorization: Bearer <accessToken>"
+```
+Buy a 10-pack via checkout → Stripe webhook shows 200 → balance becomes 10 →
+a `/coach` call decrements to 9.
+
+### 7. Point the dashboard at the backend
+Set coach mode to **`token`** (valid values are `byok | token`). The live config file
+the server reads is **`config.json`** (NOT `config.default.json`) at
+`ac-dashboard/ac-dashboard/config.json`. Prefer the dashboard's **⚙ Settings UI** —
+logging in there stores the `accessToken` automatically. Resulting config:
+```json
+{
+  "mode": "token",
+  "backendUrl": "https://<your-site>.netlify.app",
+  "account": { "email": "...", "accessToken": "...", "refreshToken": "..." }
+}
+```
+Notes:
+- Token mode requires **both** `backendUrl` and a logged-in `account.accessToken`.
+- The dashboard calls the backend over **HTTPS only** (`https.request`), so token mode
+  cannot point at a local `http://localhost` backend — test it against the live Netlify URL.
+- A `402` from the backend is surfaced as `insufficient_tokens` (out-of-tokens prompt).
+
+### Status
+- ✅ All 5 functions load and bundle cleanly (`npm install`: 35 pkgs, 0 vulnerabilities).
+- ✅ Dashboard→backend contract verified: POSTs `{ userContent }` + `Bearer` token to
+  `/.netlify/functions/coach`, matching what `coach.js` expects.
+- ⏳ Services not yet provisioned / not yet deployed.
