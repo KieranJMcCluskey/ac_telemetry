@@ -21,8 +21,14 @@ irm https://www.sugarollymountain.com/downloads/ac-telemetry/install.ps1 | iex
 The installer:
 - Installs **Node.js** automatically (via winget) if you don't have it
 - Downloads the latest app and installs it to `%LOCALAPPDATA%\ACDashboard`
+- **Installs the in-game capture plugin** into Assetto Corsa (found via Steam) so your
+  laps are recorded for coaching
 - Creates **Desktop** and **Start Menu** shortcuts
 - Preserves your settings when you re-run it to update
+
+> **Close Assetto Corsa before installing** (the plugin install needs it closed). After
+> installing, open AC → enable **Python apps** in settings → add the **AcDashboard** widget
+> to your HUD. Completed laps are saved to `Documents\AC Dashboard\captured`.
 
 Then launch **AC Dashboard** from your desktop — your browser opens at
 `http://localhost:3000`.
@@ -30,8 +36,8 @@ Then launch **AC Dashboard** from your desktop — your browser opens at
 ## AI coaching
 
 Open **⚙ Settings → 🎟 Coaching Tokens**, sign in (or create an account), and buy a
-token pack. Each coaching report uses one token. The hosted backend lives at
-`https://accoach.netlify.app`.
+token pack — you only need an email and password. Each coaching report uses one token.
+Coaching analyses your **captured laps**, so drive a few laps with the plugin active first.
 
 Prefer your own Anthropic key instead? Use **⚙ Settings → 🔑 API Key (BYOK)** and the
 app calls Claude directly with your key.

@@ -36,22 +36,23 @@ Copy-Item "$src\public\index.html" "$dst\public\index.html" -Force
 
 ## AC Python App (Telemetry Capture)
 
-**File:** `C:\Program Files (x86)\Steam\steamapps\common\assettocorsa\apps\python\AcDashboard\AcDashboard.py`  
-**Registered in:** `C:\Users\Kieran\Documents\Assetto Corsa\cfg\python.ini` → `[ACDASHBOARD] ACTIVE=1`
+**Source (in repo):** `ac-plugin/AcDashboard/AcDashboard.py` — bundled and **auto-installed by `install.ps1`** (Steam-aware: registry → `libraryfolders.vdf` → `apps\python\AcDashboard`, and `[ACDASHBOARD] ACTIVE=1` added to `python.ini`).
+**Installed to:** `<Assetto Corsa>\apps\python\AcDashboard\AcDashboard.py`
+**Registered in:** `Documents\Assetto Corsa\cfg\python.ini` → `[ACDASHBOARD] ACTIVE=1`
 
-The app runs inside AC, samples telemetry at 10Hz, and POSTs each completed lap to `localhost:3000/api/capture`. Captured laps are saved as JSON to:
+The app runs inside AC, samples telemetry at 10 Hz, and on each completed lap **writes the lap JSON directly to disk** (no HTTP, no UDP, no running server needed — the old "POSTs to localhost:3000" description and the `SERVER_HOST/PORT` constants are gone). Captured laps are saved to:
 ```
-Documents\Assetto Corsa Dashboard\ac-dashboard\ac-dashboard\captured\<track>\lap<N>_<time>_<timestamp>.json
+%USERPROFILE%\Documents\AC Dashboard\captured\<track>\lap<N>_<lapMs>_<ts>_<pts>.json
 ```
+This path **must match** the dashboard server's `CAPTURE_PATH` (server.js), which now defaults to the same folder (env-overridable via `CAPTURE_PATH`). It lives **outside** the install dir so captures survive app updates.
 
 ### How to confirm it's working in AC
-- Open the AC app tray and add **AcDashboard** to your HUD
+- In AC settings, **enable Python apps**, then add **AcDashboard** to your HUD
 - You should see a small red widget: `REC  Lap 0  |  0 pts`
-- The point count increases as you drive
-- After finishing a lap the count resets — data is being sent to the server
-- After closing AC, check `Documents\Assetto Corsa\logs\py_log.txt` — you should see:
+- The point count increases as you drive; it resets after each completed lap (lap saved)
+- Check the debug log at `Documents\Assetto Corsa\logs\acdashboard_debug.txt`:
   ```
-  [AcDashboard] Lap 2 sent — 78541ms 785 pts -> HTTP 200
+  [AcDashboard] Lap 2 saved — 78541ms 785 pts -> lap2_78541_..._785.json
   ```
 
 ---
@@ -95,11 +96,11 @@ The server code (`handleCompare`) already checks captured laps first, then .tc f
 | `Documents\Assetto Corsa Dashboard\ac-dashboard\ac-dashboard\server.js` | Node server — sessions, telemetry, compare, capture APIs |
 | `Documents\Assetto Corsa Dashboard\ac-dashboard\ac-dashboard\public\index.html` | Session list + sector analysis UI |
 | `Documents\Assetto Corsa Dashboard\ac-dashboard\ac-dashboard\public\lap.html` | Lap detail popup — charts + analysis |
-| `Documents\Assetto Corsa Dashboard\ac-dashboard\ac-dashboard\captured\` | Per-lap JSON captures (created once first lap is sent) |
+| `Documents\AC Dashboard\captured\` | Per-lap JSON captures — written by the plugin, read by the server (server's `CAPTURE_PATH`; outside the install dir so it survives updates) |
 | `Documents\Assetto Corsa\ctelemetry\player\*.tc` | AC best-lap binary files |
 | `AppData\Local\AcTools Content Manager\Progress\Sessions\*.json` | Session data (lap times, sector splits) |
-| `Documents\Assetto Corsa\logs\py_log.txt` | Python app log — check after closing AC |
-| `C:\Program Files (x86)\Steam\steamapps\common\assettocorsa\apps\python\AcDashboard\AcDashboard.py` | AC telemetry capture app |
+| `Documents\Assetto Corsa\logs\acdashboard_debug.txt` | Plugin debug log — check after closing AC |
+| `ac-plugin\AcDashboard\AcDashboard.py` (repo) | AC telemetry capture plugin — auto-installed into AC by `install.ps1` |
 
 ---
 
@@ -262,7 +263,13 @@ Both URLs verified HTTP 200 live.
    (the `$Ref` variable — switch to a tag to pin a version).
 3. Installs to `%LOCALAPPDATA%\ACDashboard`, preserving an existing `config.json` on update;
    on a fresh install it seeds `config.json` to token mode pointing at `accoach.netlify.app`.
-4. Creates a `Start-ACDashboard.bat` launcher + Desktop and Start Menu shortcuts.
+4. **Installs the AC capture plugin** — finds Assetto Corsa via Steam, copies
+   `ac-plugin\AcDashboard` into `apps\python\AcDashboard`, and activates `[ACDASHBOARD]`
+   in `python.ini` (non-destructive, BOM-free). Skips gracefully if AC isn't found.
+5. Creates a `Start-ACDashboard.bat` launcher + Desktop and Start Menu shortcuts.
+
+> AC must be **closed** during install (file locks). After install, the user still has to
+> enable Python apps in AC and add the AcDashboard widget to their HUD (can't be automated).
 
 **Where the files live:**
 | File | Repo / path | Purpose |
@@ -275,9 +282,15 @@ Both URLs verified HTTP 200 live.
 **Notes:**
 - The two `install.ps1` copies are kept in sync manually — editing the canonical one means
   re-copying to the sugarollymountain repo and redeploying that site.
+- **`install.ps1` must stay Windows PowerShell 5.1 compatible** — end users run stock 5.1, not
+  PS7. No `?.` / `??` / ternary / `&&` / `||` (7+ only; they're parse errors that abort the
+  whole script). A `?.Source` slipped through once and broke every Windows install.
 - `install.ps1` sets TLS 1.2 explicitly (Windows PowerShell 5.1 needs it for GitHub).
 - The served installer URL only works after the `sugarollymountain` site redeploys; the app
   download works anytime (public repo).
+- **Token UI:** the dashboard's Coaching Tokens settings no longer show a "Backend URL" field —
+  the URL is baked in (`DEFAULT_BACKEND_URL` in index.html) and seeded by the installer. Users
+  only enter email + password.
 
-Remaining: run the one-liner once on the gaming PC to confirm the Windows install end-to-end
-(can't be tested from macOS).
+Remaining: run the one-liner once on the gaming PC (AC closed) to confirm the Windows install +
+plugin install + capture → coaching end-to-end (can't be tested from macOS).
