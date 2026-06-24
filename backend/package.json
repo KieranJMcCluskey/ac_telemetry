@@ -6,6 +6,7 @@
     "@supabase/supabase-js": "^2.39.0",
     "@upstash/ratelimit": "^1.2.0",
     "@upstash/redis": "^1.28.0",
-    "stripe": "^14.21.0"
+    "stripe": "^14.21.0",
+    "ws": "^8.18.0"
   }
 }
