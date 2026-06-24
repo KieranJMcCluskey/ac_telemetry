@@ -1,16 +1,29 @@
 #Requires -Version 5.1
 <#
 .SYNOPSIS
-    AC Dashboard installer for Windows
+    AC Dashboard web installer for Windows.
 .DESCRIPTION
-    Installs the AC Dashboard app to AppData\Local\ACDashboard,
-    creates a desktop shortcut, and optionally adds it to the Start Menu.
+    Downloads the latest AC Dashboard straight from GitHub, installs Node.js if
+    missing, installs the app to %LOCALAPPDATA%\ACDashboard, points it at the
+    hosted coaching backend, and creates desktop + Start Menu shortcuts.
+
+    No repo download or manual editing required. Run it with:
+
+      irm https://www.sugarollymountain.com/downloads/ac-telemetry/install.ps1 | iex
+
+    Canonical source: github.com/KieranJMcCluskey/ac_telemetry (install.ps1).
+    The copy served from sugarollymountain is kept in sync with this file.
 #>
 
 $ErrorActionPreference = 'Stop'
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12  # GitHub requires TLS 1.2+
+
 $AppName    = 'AC Dashboard'
 $InstallDir = Join-Path $env:LOCALAPPDATA 'ACDashboard'
-$AppSrc     = Join-Path $PSScriptRoot 'ac-dashboard\ac-dashboard'
+$Repo       = 'KieranJMcCluskey/ac_telemetry'
+$Ref        = 'main'                                   # branch or tag to install
+$ZipUrl     = "https://github.com/$Repo/archive/refs/heads/$Ref.zip"
+$BackendUrl = 'https://accoach.netlify.app'
 
 Write-Host ""
 Write-Host "  ══════════════════════════════════════════" -ForegroundColor DarkGray
@@ -36,7 +49,7 @@ if (-not $nodeVer) {
     } catch {
         Write-Host ""
         Write-Host "  Could not install Node.js automatically." -ForegroundColor Red
-        Write-Host "  Please install it manually from https://nodejs.org then re-run this script." -ForegroundColor Red
+        Write-Host "  Please install it manually from https://nodejs.org then re-run this installer." -ForegroundColor Red
         Write-Host ""
         Read-Host "  Press Enter to exit"
         exit 1
@@ -45,39 +58,55 @@ if (-not $nodeVer) {
     Write-Host "  Node.js $nodeVer found." -ForegroundColor Green
 }
 
-# ── 2. Copy app files ────────────────────────────────────────────────────────
-Write-Host "  Installing to: $InstallDir" -ForegroundColor Cyan
+# ── 2. Download the latest app from GitHub ──────────────────────────────────
+$tmp = Join-Path $env:TEMP ("acdash_" + [Guid]::NewGuid().ToString('N'))
+New-Item -ItemType Directory -Path $tmp | Out-Null
+try {
+    $zip = Join-Path $tmp 'app.zip'
+    Write-Host "  Downloading AC Dashboard ($Ref)…" -ForegroundColor Cyan
+    Invoke-WebRequest -Uri $ZipUrl -OutFile $zip -UseBasicParsing
+    Expand-Archive -Path $zip -DestinationPath $tmp -Force
 
-if (-not (Test-Path $AppSrc)) {
-    Write-Host ""
-    Write-Host "  ERROR: Source folder not found: $AppSrc" -ForegroundColor Red
-    Write-Host "  Run install.ps1 from the project root directory." -ForegroundColor Red
-    Read-Host "  Press Enter to exit"
-    exit 1
-}
-
-if (Test-Path $InstallDir) {
-    Write-Host "  Updating existing installation…" -ForegroundColor DarkGray
-    # Preserve user's config.json if it exists
-    $existingConfig = Join-Path $InstallDir 'config.json'
-    $backupConfig   = $null
-    if (Test-Path $existingConfig) {
-        $backupConfig = Get-Content $existingConfig -Raw
+    # GitHub archives extract to <repo>-<ref>\ ; the app lives two levels in.
+    $extractedRoot = Get-ChildItem $tmp -Directory |
+        Where-Object { $_.Name -like 'ac_telemetry-*' } | Select-Object -First 1
+    if (-not $extractedRoot) { throw 'Could not find extracted archive folder.' }
+    $AppSrc = Join-Path $extractedRoot.FullName 'ac-dashboard\ac-dashboard'
+    if (-not (Test-Path (Join-Path $AppSrc 'server.js'))) {
+        throw "App files not found in download (expected $AppSrc\server.js)."
     }
-    Remove-Item $InstallDir -Recurse -Force
+
+    # ── 3. Install (preserving existing config.json) ────────────────────────
+    Write-Host "  Installing to: $InstallDir" -ForegroundColor Cyan
+    $backupConfig = $null
+    if (Test-Path $InstallDir) {
+        Write-Host "  Updating existing installation…" -ForegroundColor DarkGray
+        $existingConfig = Join-Path $InstallDir 'config.json'
+        if (Test-Path $existingConfig) { $backupConfig = Get-Content $existingConfig -Raw }
+        Remove-Item $InstallDir -Recurse -Force
+    }
+    Copy-Item $AppSrc $InstallDir -Recurse -Force
+
+    # config.json: restore the user's if we had one, else seed token mode at the backend
+    $cfgPath = Join-Path $InstallDir 'config.json'
+    if ($backupConfig) {
+        Set-Content $cfgPath $backupConfig -Encoding UTF8
+        Write-Host "  Preserved existing config.json." -ForegroundColor DarkGray
+    } else {
+        $seed = [ordered]@{
+            mode       = 'token'
+            apiKey     = ''
+            backendUrl = $BackendUrl
+            account    = [ordered]@{ email = ''; accessToken = ''; refreshToken = '' }
+        } | ConvertTo-Json -Depth 5
+        Set-Content $cfgPath $seed -Encoding UTF8
+    }
+}
+finally {
+    Remove-Item $tmp -Recurse -Force -ErrorAction SilentlyContinue
 }
 
-Copy-Item $AppSrc $InstallDir -Recurse -Force
-
-# Restore config.json if we had one
-if ($backupConfig) {
-    Set-Content (Join-Path $InstallDir 'config.json') $backupConfig -Encoding UTF8
-    Write-Host "  Preserved existing config.json." -ForegroundColor DarkGray
-} elseif (Test-Path (Join-Path $InstallDir 'config.default.json')) {
-    Copy-Item (Join-Path $InstallDir 'config.default.json') (Join-Path $InstallDir 'config.json')
-}
-
-# ── 3. Create launcher batch file ────────────────────────────────────────────
+# ── 4. Create launcher batch file ────────────────────────────────────────────
 $launcherPath = Join-Path $InstallDir 'Start-ACDashboard.bat'
 $launcherContent = @"
 @echo off
@@ -87,37 +116,31 @@ echo.
 echo   Starting AC Dashboard...
 echo   Open your browser at http://localhost:3000
 echo.
+start "" http://localhost:3000
 node server.js
 pause
 "@
 Set-Content $launcherPath $launcherContent -Encoding ASCII
 
-# ── 4. Create desktop shortcut ───────────────────────────────────────────────
-$desktopPath  = [System.Environment]::GetFolderPath('Desktop')
-$shortcutPath = Join-Path $desktopPath "$AppName.lnk"
-
-$wsh  = New-Object -ComObject WScript.Shell
-$link = $wsh.CreateShortcut($shortcutPath)
-$link.TargetPath       = $launcherPath
-$link.WorkingDirectory = $InstallDir
-$link.Description      = 'AC Session Dashboard with AI Coaching'
-# Use node.exe icon as fallback
+# ── 5. Create desktop + Start Menu shortcuts ────────────────────────────────
+$wsh      = New-Object -ComObject WScript.Shell
 $nodePath = (Get-Command node -ErrorAction SilentlyContinue)?.Source
-if ($nodePath) { $link.IconLocation = "$nodePath,0" }
-$link.Save()
 
+function New-AppShortcut($path) {
+    $link = $wsh.CreateShortcut($path)
+    $link.TargetPath       = $launcherPath
+    $link.WorkingDirectory = $InstallDir
+    $link.Description      = 'AC Session Dashboard with AI Coaching'
+    if ($nodePath) { $link.IconLocation = "$nodePath,0" }
+    $link.Save()
+}
+
+$desktopPath = [System.Environment]::GetFolderPath('Desktop')
+New-AppShortcut (Join-Path $desktopPath "$AppName.lnk")
 Write-Host "  Desktop shortcut created." -ForegroundColor Green
 
-# ── 5. Start Menu entry ──────────────────────────────────────────────────────
 $startMenuDir = Join-Path $env:APPDATA 'Microsoft\Windows\Start Menu\Programs'
-$startShortcut = Join-Path $startMenuDir "$AppName.lnk"
-$link2 = $wsh.CreateShortcut($startShortcut)
-$link2.TargetPath       = $launcherPath
-$link2.WorkingDirectory = $InstallDir
-$link2.Description      = 'AC Session Dashboard with AI Coaching'
-if ($nodePath) { $link2.IconLocation = "$nodePath,0" }
-$link2.Save()
-
+New-AppShortcut (Join-Path $startMenuDir "$AppName.lnk")
 Write-Host "  Start Menu entry created." -ForegroundColor Green
 
 # ── 6. Done ──────────────────────────────────────────────────────────────────
@@ -126,14 +149,12 @@ Write-Host "  ══════════════════════
 Write-Host "    Installation complete!" -ForegroundColor Green
 Write-Host ""
 Write-Host "    • Double-click '$AppName' on your desktop to launch" -ForegroundColor White
-Write-Host "    • Then open http://localhost:3000 in your browser" -ForegroundColor White
-Write-Host "    • Click ⚙ in the top-right to configure your API key" -ForegroundColor White
+Write-Host "    • Your browser opens at http://localhost:3000" -ForegroundColor White
+Write-Host "    • Click ⚙ (top-right) → Coaching Tokens → Sign In to start coaching" -ForegroundColor White
 Write-Host "  ══════════════════════════════════════════" -ForegroundColor DarkGray
 Write-Host ""
 
 $launch = Read-Host "  Launch AC Dashboard now? (Y/n)"
 if ($launch -ne 'n' -and $launch -ne 'N') {
     Start-Process $launcherPath
-    Start-Sleep 2
-    Start-Process 'http://localhost:3000'
 }
