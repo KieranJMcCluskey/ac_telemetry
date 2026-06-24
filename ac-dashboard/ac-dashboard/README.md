@@ -2,6 +2,11 @@
 
 Live dashboard for Assetto Corsa Content Manager session data.
 
+> **Just want to use it?** Don't run this folder by hand — use the one-click
+> installer instead: https://www.sugarollymountain.com/apps.html
+> (installs Node.js and sets everything up for you). The steps below are for
+> running directly from source.
+
 ## Setup
 
 1. Make sure you have Node.js installed (https://nodejs.org)
