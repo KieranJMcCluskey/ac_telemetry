@@ -205,7 +205,7 @@ logging in there stores the `accessToken` automatically. Resulting config:
 ```json
 {
   "mode": "token",
-  "backendUrl": "https://<your-site>.netlify.app",
+  "backendUrl": "https://accoach.netlify.app",
   "account": { "email": "...", "accessToken": "...", "refreshToken": "..." }
 }
 ```
@@ -215,8 +215,30 @@ Notes:
   cannot point at a local `http://localhost` backend — test it against the live Netlify URL.
 - A `402` from the backend is surfaced as `insufficient_tokens` (out-of-tokens prompt).
 
-### Status
-- ✅ All 5 functions load and bundle cleanly (`npm install`: 35 pkgs, 0 vulnerabilities).
-- ✅ Dashboard→backend contract verified: POSTs `{ userContent }` + `Bearer` token to
-  `/.netlify/functions/coach`, matching what `coach.js` expects.
-- ⏳ Services not yet provisioned / not yet deployed.
+### Status — ✅ COMPLETE & LIVE (2026-06-24)
+
+Deployed at **https://accoach.netlify.app** (Netlify site `accoach`, CI/CD auto-deploys
+from GitHub `main`, base directory `backend`). All five functions verified live:
+
+| Function | Verified |
+|---|---|
+| `auth` (register/login) | ✅ register 200 → instant login (email confirmation off) |
+| `tokens` (balance) | ✅ returns balance |
+| `checkout` (Stripe session) | ✅ creates live `cs_live_` Checkout URL |
+| `webhook` (credit on payment) | ✅ real purchase credited balance 0 → 10 |
+| `coach` (Claude + deduct) | ✅ live Claude report returned, balance 10 → 9 |
+| dashboard token mode | ✅ `/api/tokens/balance` proxied live balance from backend |
+
+Setup notes for future reference:
+- **Runtime gotcha:** Netlify runs these functions on **Node 20** regardless of
+  `NODE_VERSION` / `AWS_LAMBDA_JS_RUNTIME` in `netlify.toml`. `@supabase/supabase-js`'s
+  `createClient` builds a realtime client needing a global `WebSocket`, so we polyfill it
+  via `ws` in `functions/_shared/ws-polyfill.js` (required by both `_shared/supabase.js`
+  and `auth.js`). Don't remove it.
+- **Stripe account is shared with the `who-am-i` app.** ac-coach checkouts are tagged
+  `metadata.app='ac-coach'`; the webhook ack-ignores (200) any event without it.
+  who-am-i's webhook likewise 200-ignores ac-coach's events. Both confirmed.
+- **Supabase Auth:** Email provider enabled, email **confirmation disabled** (instant login).
+
+Remaining (non-blocking): configure the dashboard on the gaming PC via the ⚙ Settings UI
+with a real account; refund the $5 live test purchase in Stripe.
