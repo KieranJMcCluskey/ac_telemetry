@@ -1,13 +1,6 @@
 'use strict';
 
-// @supabase/supabase-js always constructs a realtime client inside createClient,
-// and that requires a global WebSocket. Netlify runs these functions on Node 20
-// (no native WebSocket), so polyfill it with `ws`. We only use auth + REST/RPC,
-// but the client still refuses to construct without a WebSocket constructor.
-if (typeof globalThis.WebSocket === 'undefined') {
-  globalThis.WebSocket = require('ws');
-}
-
+require('./ws-polyfill'); // must precede createClient (Node 20 has no native WebSocket)
 const { createClient } = require('@supabase/supabase-js');
 
 // Service-role client — never expose this key client-side

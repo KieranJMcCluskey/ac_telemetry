@@ -1,5 +1,6 @@
 'use strict';
 
+require('./_shared/ws-polyfill'); // must precede createClient (Node 20 has no native WebSocket)
 const { createClient } = require('@supabase/supabase-js');
 const { preflight, json } = require('./_shared/cors');
 
