@@ -294,3 +294,40 @@ Both URLs verified HTTP 200 live.
 
 Remaining: run the one-liner once on the gaming PC (AC closed) to confirm the Windows install +
 plugin install + capture → coaching end-to-end (can't be tested from macOS).
+
+---
+
+## Coaching Knowledge — Tracks & Car Classes
+
+The coach message (`buildCoachMessage` + the assembly in `handleCoach`, server.js) is built
+**once** and sent in both BYOK and token modes, so all knowledge lives in `userContent` —
+**no system-prompt change** (which would have to be duplicated in `server.js` and the backend
+`prompt.js`).
+
+### Track knowledge
+- Files: `ac-dashboard/ac-dashboard/trackKnowledge/*.txt` (one per track; ~20 lines — corners
+  with normalised positions/gears/speeds, sector splits, risks, priorities).
+- Lookup: `getTrackKnowledge(track)` does `slug.includes(key)` — keys are **short distinctive
+  slugs** (`brands_hatch`, `mugello`, `laguna_seca`, `vallelunga`, `nurburgring`, …) so they
+  match whatever prefix/layout the AC track id carries. No file → block omitted, coach still
+  runs on telemetry.
+- Added this pass (verified against real AC folder ids): Brands Hatch, Mugello, Laguna Seca,
+  Vallelunga, Nürburgring. Zandvoort already existed.
+- **Deferred:** Nordschleife (too long for the ~20-line format — needs sector-based treatment)
+  and Highlands (thin public corner data). They correctly fall through to telemetry-only.
+- **Limitation:** the matcher can't distinguish track **layouts** (Brands Hatch GP/Indy,
+  Nürburgring GP/Sprint, Vallelunga Club/Classic/Extended) — one file per track, each noting
+  its variants. Splitting per-layout needs the capture/session `track` field to carry the
+  layout (unconfirmed). Corner positions/gears/speeds are approximate (car-dependent).
+
+### Car-class knowledge
+- Files: `ac-dashboard/ac-dashboard/classKnowledge/*.txt` — `f1, gt3, tcr, supercars_v8, lmp1,
+  hypercar, vintage` (class-specific braking/throttle/downforce/common-mistakes notes).
+- `detectCarClass(carId, cfg)` (server.js): checks `config.classByCar` overrides first
+  (`{ "<ac_car_id>": "GT3" }`), then a pattern map over the car id (e.g. `*gt3*`→gt3,
+  `rss_formula_*`/`tatuusfa1`→f1, `*tcr*`→tcr, `*hypercar/lmh/lmdh/gtp*`→hypercar,
+  `*supercar/v8/holden/falcon*`→supercars_v8, `*classic/vintage/historic*`→vintage).
+- Unmatched cars → the message tells the model to infer the class from the car id and adapt.
+- Injected into `userContent` as a "DRIVER'S CAR CLASS" block before the telemetry summary.
+
+Both sets ship to users via the installer's GitHub pull (next install/update).
