@@ -311,10 +311,11 @@ The coach message (`buildCoachMessage` + the assembly in `handleCoach`, server.j
   slugs** (`brands_hatch`, `mugello`, `laguna_seca`, `vallelunga`, `nurburgring`, …) so they
   match whatever prefix/layout the AC track id carries. No file → block omitted, coach still
   runs on telemetry.
-- Added this pass (verified against real AC folder ids): Brands Hatch, Mugello, Laguna Seca,
-  Vallelunga, Nürburgring. Zandvoort already existed.
-- **Deferred:** Nordschleife (too long for the ~20-line format — needs sector-based treatment)
-  and Highlands (thin public corner data). They correctly fall through to telemetry-only.
+- Added (verified against real AC folder ids): Brands Hatch, Mugello, Laguna Seca, Vallelunga,
+  Nürburgring, **Nordschleife**, **Highlands**. Zandvoort already existed.
+- Nordschleife and Highlands use a **section-based** format (not corner-by-corner): Nordschleife
+  has 150+ corners so it's anchored to named sections; Highlands is fictional with no official
+  corner names, so it's character/layout-based. Both lean on the telemetry for fine detail.
 - **Limitation:** the matcher can't distinguish track **layouts** (Brands Hatch GP/Indy,
   Nürburgring GP/Sprint, Vallelunga Club/Classic/Extended) — one file per track, each noting
   its variants. Splitting per-layout needs the capture/session `track` field to carry the

@@ -1,0 +1,15 @@
+TRACK: Highlands, Scotland — fictional (Kunos original)
+Length: ~12.2 km (Full) / ~3.7 km (Short) | Character: flowing fictional Scottish-highlands circuit — long straights, fast sweepers, a tunnel and dam section, big scenery and real elevation change.
+NOTE: AC "ks_highlands" has several layouts — FULL (~12.2 km, point-to-point feel), SHORT (~3.7 km, the tighter technical loop near start/finish), and DRIFT. Corners aren't officially named (fictional track), so this is SECTION / character-based — lean heavily on the measured telemetry (braking zones, speed trace) for the specifics, as named-corner references are limited.
+
+LAYOUT — SHORT (~3.7 km, the technical loop):
+- A conventional mix of medium and slow corners with a couple of real braking zones and a flowing middle.
+- Treat it like any technical circuit: maximise exit on the slow corners that lead onto straights; stay tidy and linked through the medium corners.
+
+LAYOUT — FULL (~12.2 km):
+- Begins with the technical loop, then breaks out onto a long, fast, flowing run through the landscape — long straights, fast sweepers, a tunnel and a dam-wall section, with significant elevation change.
+- The fast sweepers reward commitment and precise placement; a small line error scrubs a lot of speed over their length.
+- Several long straights — the lap time is in the EXIT of the corner that precedes each straight.
+
+KEY RISKS: the fast flowing sections punish a poor line over their full length; long straights mean a weak preceding-corner exit is expensive; watch braking points into the slow corners that follow long fast runs (very high entry speed).
+COACHING PRIORITY: nail the exits of the slow/medium corners that feed straights; commit and place the car well through the fast sweepers; brake confidently but early enough into the slow corners after the fast sections. Use the speed-trace and braking-zone data as the primary reference here.

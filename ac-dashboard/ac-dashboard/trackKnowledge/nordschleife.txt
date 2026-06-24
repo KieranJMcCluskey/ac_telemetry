@@ -1,0 +1,29 @@
+TRACK: Nürburgring Nordschleife, Germany ("The Green Hell")
+Length: 20.832 km | Turns: 150+ | Character: legendary, narrow, unforgiving — huge elevation, blind crests, almost no run-off. A memory-and-commitment circuit.
+NOTE: AC "ks_nordschleife" has the standalone Nordschleife (~20.8 km) and the ENDURANCE layout (~25.3 km = Nordschleife + the GP circuit). With 150+ corners this is SECTION-BASED, not corner-by-corner — anchor coaching to the named sections and lean on the measured telemetry (braking zones, speed trace) for the detail within each.
+
+KEY SECTIONS (name, normalised position range, character / watch-for — positions approximate):
+- Start straight / Antoniusbuche  pos 0.00–0.04  flat-out, gentle kinks
+- Hatzenbach          pos 0.04–0.10  tight flowing esses (3rd-4th) — rhythm section, easy to get out of sequence; be tidy and patient
+- Hocheichen          pos 0.10–0.13  downhill right then left
+- Flugplatz           pos 0.13–0.18  fast crests — the car goes light over the brows; commit but expect float
+- Schwedenkreuz       pos 0.18–0.21  very fast near-flat left, downhill — big commitment, then heavy braking
+- Aremberg            pos 0.21–0.23  downhill right (3rd) — braking from high speed
+- Fuchsröhre (Foxhole) pos 0.23–0.27  plunging downhill into a compressing uphill left-right — flat and intimidating; the dip loads the car hard
+- Adenauer Forst      pos 0.27–0.30  tight right-left-right (2nd) — slow, big stop, easy to lock the fronts
+- Metzgesfeld / Kallenhard pos 0.30–0.36  downhill left then a downhill right (late apex)
+- Wehrseifen          pos 0.36–0.39  slow downhill left-right (2nd) — very tight, big stop
+- Bergwerk            pos 0.41–0.44  slow right (2nd) — CRITICAL: exit feeds a long uphill drag, so exit drive is worth a lot (historically the most dangerous corner)
+- Kesselchen          pos 0.44–0.50  long uphill flowing sequence — carry momentum
+- Karussell           pos 0.53–0.56  the famous banked concrete carousel (2nd) — drop into the banking and let it sling you round; bumpy
+- Hohe Acht           pos 0.56–0.60  steep climb to the highest point, tight right
+- Wippermann / Eschbach / Brünnchen pos 0.60–0.68  downhill left-rights — Brünnchen exit camber bites
+- Pflanzgarten 1 & 2  pos 0.68–0.73  fast downhill with jumps/crests — the car gets light/airborne; precise placement and commitment
+- Stefan Bellof S     pos 0.73–0.76  fast esses
+- Schwalbenschwanz / Kleines Karussell pos 0.76–0.80  a smaller banked carousel + tight section
+- Galgenkopf          pos 0.80–0.84  long right onto Döttinger Höhe — CRITICAL exit: feeds the longest straight on the lap
+- Döttinger Höhe      pos 0.84–0.97  very long near-flat straight (slight kinks) — top speed; tuck in and minimise drag
+- Tiergarten / back to line pos 0.97–1.00  fast kinks
+
+KEY RISKS: narrow with little run-off — mistakes are costly. Blind light-car crests (Flugplatz, Pflanzgarten); the Fuchsröhre compression; Bergwerk and Galgenkopf exits (both feed long straights).
+COACHING PRIORITY: Bergwerk exit (long climb), Galgenkopf exit (Döttinger Höhe), commitment over the blind fast crests, rhythm through Hatzenbach. On this circuit consistency and knowing what's over the next crest beat raw aggression — flag the single section with the most lap-to-lap variation as the focus.
