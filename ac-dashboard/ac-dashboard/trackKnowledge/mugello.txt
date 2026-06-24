@@ -1,0 +1,20 @@
+TRACK: Autodromo Internazionale del Mugello, Italy
+Length: 5.245 km | Turns: 15 | Character: fast, flowing, big elevation — high-speed commitment and rhythm
+KEY CORNERS (name, normalised position, type, typical gear, speed in → out — approximate, car-dependent):
+- San Donato (T1)        pos≈0.16 heavy downhill-into-uphill braking right, 2nd, 290→90 km/h [hardest braking on the lap; main overtaking spot]
+- Luco (T2)              pos≈0.22 left, 4th, 185→170 km/h [first of a fast left-right]
+- Poggio Secco (T3)      pos≈0.27 right, 4th, 190→180 km/h
+- Materassi (T4)         pos≈0.34 fast right, 5th, 230→210 km/h [commitment]
+- Borgo San Lorenzo (T5) pos≈0.40 left, 4th, 200→180 km/h
+- Casanova–Savelli (T6-7) pos≈0.48 slow left-right complex, 2nd-3rd, 150→100 km/h [rotation and exit drive]
+- Arrabbiata 1 (T8)      pos≈0.57 fast uphill right, 4th, 220→200 km/h [blind, commitment]
+- Arrabbiata 2 (T9)      pos≈0.62 fast right, 4th, 215→195 km/h
+- Scarperia (T10)        pos≈0.72 right, 4th, 200→180 km/h
+- Palagio (T11)          pos≈0.77 right, 4th, 190→180 km/h
+- Correntaio (T12)       pos≈0.83 downhill right, 3rd, 175→150 km/h
+- Biondetti (T13-14)     pos≈0.90 left-right chicane, 3rd, 160→140 km/h
+- Bucine (T15)           pos≈0.95 long left onto the straight, 3rd→4th, 150→200 km/h [exit speed feeds the long pit straight]
+
+SECTOR SPLITS (approx): S1 0.00→0.30 | S2 0.30→0.65 | S3 0.65→1.00
+KEY RISKS: San Donato braking (downhill into uphill compresses the car); Arrabbiata commitment; Bucine exit for the long straight.
+COACHING PRIORITY: San Donato brake point and rotation; Arrabbiata 1-2 commitment; Bucine exit speed.

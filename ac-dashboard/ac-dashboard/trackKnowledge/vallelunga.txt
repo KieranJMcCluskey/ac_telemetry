@@ -1,0 +1,19 @@
+TRACK: Autodromo Vallelunga, Italy
+Length: ~4.085 km (full/Classic GP) | Turns: ~14 | Character: long straight + technical infield — traction out of slow corners and rhythm
+NOTE: the AC track has CLUB (short), CLASSIC and EXTENDED layouts. Advice below is the main full/Classic GP circuit; the CLUB layout cuts the back infield section. Corner positions are approximate.
+
+KEY CORNERS (name, normalised position, type, typical gear, speed in → out — approximate, car-dependent):
+- Curva Grande (T1)      pos≈0.10 right at the end of the long main straight, 3rd, 235→120 km/h [heaviest braking; main overtaking spot]
+- Tornantino (T2)        pos≈0.16 tight right hairpin, 2nd, 110→70 km/h [rotate it, prioritise exit traction]
+- Trincea (T3-4)         pos≈0.26 left-right, 3rd, 150→130 km/h
+- Campagnolo (T5)        pos≈0.36 right, 3rd, 160→140 km/h
+- Roma (T6)              pos≈0.46 right, 3rd, 150→130 km/h
+- Cimini esses (T7-8)    pos≈0.56 quick left-right, 3rd, 150→140 km/h [rhythm section]
+- Semaforo (T9)          pos≈0.66 right, 3rd, 160→140 km/h
+- Curva del Sole (T10)   pos≈0.74 right, 4th, 180→160 km/h
+- Esse (T11-12)          pos≈0.84 left-right, 3rd, 160→140 km/h
+- Curva Nord (T13)       pos≈0.93 long right onto the main straight, 3rd→4th, 150→200 km/h [exit speed sets the long straight]
+
+SECTOR SPLITS (approx): S1 0.00→0.33 | S2 0.33→0.66 | S3 0.66→1.00
+KEY RISKS: Curva Grande braking from top speed; Curva Nord exit (the long straight follows, so exit speed is worth the most).
+COACHING PRIORITY: Curva Grande brake point; Tornantino exit traction; Curva Nord exit speed.

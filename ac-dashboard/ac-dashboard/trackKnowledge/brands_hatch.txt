@@ -1,0 +1,18 @@
+TRACK: Brands Hatch — Grand Prix Circuit, UK
+Length: 3.916 km | Turns: 9 | Character: undulating, fast, blind crests and off-camber exits — commitment and rhythm
+NOTE: the AC track also has the shorter INDY layout (the first loop only: Paddock Hill → Druids → Graham Hill, back via Cooper Straight). The corners below are the GP circuit; on Indy only T1–T3 and the return apply.
+
+KEY CORNERS (name, normalised position, type, typical gear, speed in → out — speeds/gears are approximate and car-dependent):
+- Paddock Hill Bend (T1) pos≈0.06 downhill off-camber right, 4th, 250→150 km/h [blind over a crest, drops away on exit — very easy to run wide; get braking done before the crest]
+- Druids (T2)            pos≈0.13 tight downhill hairpin right, 2nd, 150→70 km/h [late apex so you can use the drop for traction]
+- Graham Hill Bend (T3)  pos≈0.20 left onto Cooper Straight, 3rd, 110→130 km/h [exit drive feeds the straight]
+- Surtees (T4)           pos≈0.34 fast right, 4th, 190→175 km/h [onto Pilgrim's Drop]
+- Hawthorn (T5)          pos≈0.46 fast downhill right, 5th, 230→200 km/h [near-flat in higher-grip cars — commitment]
+- Westfield (T6)         pos≈0.55 downhill right, 3rd, 180→150 km/h
+- Dingle Dell (T7)       pos≈0.63 right, 3rd, 160→150 km/h
+- Sheene / Stirlings (T8) pos≈0.72 left-right, 3rd, 150→130 km/h
+- Clearways / Clark Curve (T9) pos≈0.86 long right onto pit straight, 3rd→4th, 140→200 km/h [long corner, exit speed sets the whole straight]
+
+SECTOR SPLITS (approx): S1 0.00→0.33 | S2 0.33→0.66 | S3 0.66→1.00
+KEY RISKS: Paddock Hill exit (off-camber, runs wide); Clearways/Clark exit (over-slowing kills the main straight).
+COACHING PRIORITY: Paddock Hill commitment and line; Druids late apex for the drive; Clearways/Clark exit speed.
