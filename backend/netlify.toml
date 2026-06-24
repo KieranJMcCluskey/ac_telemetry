@@ -5,7 +5,10 @@
 [build.environment]
   # Node 22+ has native WebSocket, required by @supabase/supabase-js's realtime
   # client (constructed inside createClient). On Node 20 every function 502s.
+  # NODE_VERSION sets the BUILD image; AWS_LAMBDA_JS_RUNTIME sets the FUNCTIONS
+  # runtime — both must be 22 or the functions still execute on Node 20.
   NODE_VERSION = "22"
+  AWS_LAMBDA_JS_RUNTIME = "nodejs22.x"
 
 [[headers]]
   for = "/.netlify/functions/*"
