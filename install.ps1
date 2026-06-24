@@ -124,7 +124,8 @@ Set-Content $launcherPath $launcherContent -Encoding ASCII
 
 # ── 5. Create desktop + Start Menu shortcuts ────────────────────────────────
 $wsh      = New-Object -ComObject WScript.Shell
-$nodePath = (Get-Command node -ErrorAction SilentlyContinue)?.Source
+$nodeCmd  = Get-Command node -ErrorAction SilentlyContinue
+$nodePath = if ($nodeCmd) { $nodeCmd.Source } else { $null }
 
 function New-AppShortcut($path) {
     $link = $wsh.CreateShortcut($path)
