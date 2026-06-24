@@ -774,12 +774,6 @@ body {
             Purchase coaching sessions once — no subscription. Tokens are stored in your account and work across reinstalls.
           </p>
           <div class="s-row">
-            <label class="s-label">Backend URL</label>
-            <input class="s-input" type="url" id="backendUrlInput" placeholder="https://your-site.netlify.app">
-            <div class="s-hint">Your Netlify site URL (set once, stays saved).</div>
-          </div>
-          <hr class="s-divider">
-          <div class="s-row">
             <label class="s-label">Email</label>
             <input class="s-input" type="email" id="tokenEmail" placeholder="you@example.com" style="font-family:var(--font-body)">
           </div>
@@ -1453,6 +1447,9 @@ function renderCoachReport(r) {
 // ─── SETTINGS ────────────────────────────────────────────────────────────────
 
 let settingsConfig = {};
+// Hosted coaching backend. Users never need to enter this; the installer also
+// seeds it into config.json. Kept overridable via config.json for self-hosters.
+const DEFAULT_BACKEND_URL = 'https://accoach.netlify.app';
 
 async function openSettings() {
   document.getElementById('settingsOverlay').classList.remove('hidden');
@@ -1497,9 +1494,7 @@ function renderSettings() {
   }
   document.getElementById('byokKeyInput').value = '';
 
-  // Token pane
-  const backendInput = document.getElementById('backendUrlInput');
-  if (backendInput && cfg.backendUrl) backendInput.value = cfg.backendUrl;
+  // Token pane (backend URL is baked in / config-seeded; no field to render)
 
   if (cfg.account?.loggedIn) {
     document.getElementById('tokenLoggedOut').style.display = 'none';
@@ -1540,10 +1535,9 @@ async function clearApiKey() {
 }
 
 async function tokenLogin() {
-  const backendUrl = document.getElementById('backendUrlInput').value.trim();
+  const backendUrl = settingsConfig.backendUrl || DEFAULT_BACKEND_URL;
   const email = document.getElementById('tokenEmail').value.trim();
   const pass  = document.getElementById('tokenPass').value;
-  if (!backendUrl) { showSettingsMsg('tokenMsg', 'err', 'Enter your backend URL first.'); return; }
   if (!email || !pass) { showSettingsMsg('tokenMsg', 'err', 'Enter email and password.'); return; }
 
   // Save backend URL first
@@ -1582,10 +1576,9 @@ async function tokenLogin() {
 }
 
 async function tokenRegister() {
-  const backendUrl = document.getElementById('backendUrlInput').value.trim();
+  const backendUrl = settingsConfig.backendUrl || DEFAULT_BACKEND_URL;
   const email = document.getElementById('tokenEmail').value.trim();
   const pass  = document.getElementById('tokenPass').value;
-  if (!backendUrl) { showSettingsMsg('tokenMsg', 'err', 'Enter your backend URL first.'); return; }
   if (!email || !pass) { showSettingsMsg('tokenMsg', 'err', 'Enter email and password.'); return; }
 
   await fetch('/api/config', {
@@ -1639,9 +1632,8 @@ function updateTokenBadge(balance) {
 }
 
 function openPurchasePage() {
-  const url = (settingsConfig.backendUrl || '').replace(/\/$/, '');
-  if (url) window.open(url, '_blank');
-  else showSettingsMsg('tokenMsgLoggedIn', 'err', 'Backend URL not set.');
+  const url = (settingsConfig.backendUrl || DEFAULT_BACKEND_URL).replace(/\/$/, '');
+  window.open(url, '_blank');
 }
 
 function showSettingsMsg(id, type, text) {
