@@ -1,0 +1,15 @@
+CAR CLASS: Hypercar / LMH / LMDh / GTP
+Profile: ~1030 kg, ~670 bhp (BoP-capped) hybrid, high downforce, slicks; ABS/TC presence varies by car.
+
+BRAKING:
+- High downforce: brake late and modulate as downforce bleeds off with speed. Some cars have ABS — know whether yours does and brake accordingly.
+- Hybrid regen affects brake balance; smoothness keeps it predictable.
+
+THROTTLE:
+- Strong aero plus hybrid torque-fill: good traction in faster corners, but slow corners still need progressive throttle to avoid wheelspin / TC cuts.
+
+DOWNFORCE:
+- Closer to LMP1 than GT3 in fast corners — commit more than GT instinct suggests.
+
+COMMON MISTAKES: treating it like a GT3 and under-committing in fast corners; early throttle in slow corners; ignoring regen-induced brake-balance shifts.
+COACHING FOCUS: commit in fast corners, progressive slow-corner throttle, smooth braking with regen in mind.

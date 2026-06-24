@@ -1,0 +1,17 @@
+CAR CLASS: Supercars / V8 Supercars
+Profile: ~1400 kg, ~640 bhp, RWD, control tyre, low downforce, no ABS / no TC, softly sprung.
+
+BRAKING:
+- Heavy car, low downforce: braking distances are LONG and the rear goes light under braking — easy to lock the rears or get a snappy entry. Brake earlier and straighter than a GT3.
+- No ABS — modulate pressure, especially into slow corners.
+
+THROTTLE:
+- RWD + big torque + no TC = wheelspin on exit. Smooth, progressive throttle; the rear steps out if you stab it.
+- Long races — overdriving cooks the rear tyres; manage them.
+
+HANDLING:
+- Heavy and soft: weight transfer is SLOW. Be patient and let the car settle between inputs — quick hands fight the car.
+- Tends to understeer mid-corner, then oversteer on power.
+
+COMMON MISTAKES: braking too late for a heavy, low-downforce car; stabbing throttle and spinning the rears; fighting the slow weight transfer.
+COACHING FOCUS: earlier straight-line braking, smooth progressive throttle, patience with weight transfer, rear-tyre management.

@@ -1,0 +1,18 @@
+CAR CLASS: F1 / Open-Wheel Formula
+Profile: ~750 kg, 900+ bhp with hybrid, extreme downforce, carbon brakes, no ABS, little/no TC.
+
+BRAKING:
+- Carbon brakes need heat: weak when cold, enormous when hot. Brake markers are MUCH later than a GT car — most amateurs brake far too early.
+- No ABS: lock-ups flat-spot tyres instantly. Brake very hard initially, then BLEED pressure off as speed (and downforce) falls. Pressure modulation is the core skill.
+- Brake in a straight line; the car decelerates harder than instinct expects — trust it.
+
+THROTTLE:
+- Big power + limited TC: slow corners punish early throttle with wheelspin — be patient and progressive.
+- In fast corners the grip is there to get to throttle early.
+
+DOWNFORCE:
+- Grip rises with speed: fast corners can be taken far quicker than it feels — commit. Lifting in near-flat corners loses huge time.
+- Low-speed corners get little aero help — they're traction-limited like any car.
+
+COMMON MISTAKES: braking too early; lifting in fast corners that are actually flat/near-flat; cold-brake lock-ups; clumsy throttle in slow corners.
+COACHING FOCUS: brake later and modulate pressure, commit in high-downforce corners, smooth throttle where traction-limited.

@@ -29,6 +29,7 @@ const DEFAULT_CONFIG = {
   apiKey: '',            // for byok mode
   backendUrl: '',        // Netlify backend URL, e.g. https://ac-coach.netlify.app
   account: { email: '', accessToken: '', refreshToken: '' },
+  classByCar: {},        // optional override: { "<ac_car_id>": "GT3" } for cars auto-detection misses
 };
 
 function loadConfig() {
@@ -707,6 +708,66 @@ function getTrackKnowledge(track) {
   return null;
 }
 
+// ─── CAR-CLASS KNOWLEDGE ─────────────────────────────────────────────────────
+
+function loadClassKnowledge() {
+  const dir = path.join(__dirname, 'classKnowledge');
+  if (!fs.existsSync(dir)) return {};
+  const knowledge = {};
+  try {
+    fs.readdirSync(dir).filter(f => f.endsWith('.txt')).forEach(f => {
+      knowledge[path.basename(f, '.txt')] = fs.readFileSync(path.join(dir, f), 'utf8').trim();
+    });
+    console.log(`🏎  Loaded ${Object.keys(knowledge).length} car-class knowledge files`);
+  } catch (e) {
+    console.warn('Could not load class knowledge:', e.message);
+  }
+  return knowledge;
+}
+
+const CLASS_KNOWLEDGE = loadClassKnowledge();
+
+// Map a free-text class name (e.g. "GT3", "V8 Supercars") to a class-file slug.
+function normaliseClass(name) {
+  const n = (name || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+  if (!n) return null;
+  if (n.includes('gt3')) return 'gt3';
+  if (n.includes('tcr')) return 'tcr';
+  if (n.includes('lmp1')) return 'lmp1';
+  if (n.includes('hypercar') || n.includes('lmh') || n.includes('lmdh') || n.includes('gtp')) return 'hypercar';
+  if (n.includes('f1') || n.includes('formula')) return 'f1';
+  if (n.includes('v8') || n.includes('supercar')) return 'supercars_v8';
+  if (n.includes('vintage') || n.includes('classic') || n.includes('historic')) return 'vintage';
+  return CLASS_KNOWLEDGE[n] ? n : null;
+}
+
+// Detect a car's class from its AC car id, honouring config.classByCar overrides.
+function detectCarClass(car, cfg) {
+  const id = (car || '').toLowerCase();
+  if (!id) return null;
+  const overrides = (cfg && cfg.classByCar) || {};
+  for (const key of Object.keys(overrides)) {
+    if (id === key.toLowerCase()) return normaliseClass(overrides[key]);
+  }
+  const rules = [
+    [/gt3|gte|gt2/, 'gt3'],
+    [/tcr/, 'tcr'],
+    [/lmp1/, 'lmp1'],
+    [/hypercar|lmh|lmdh|_gtp/, 'hypercar'],
+    [/formula|_f1_|^f1|rss_formula|tatuusfa1/, 'f1'],
+    [/supercar|v8sc|_v8|holden|falcon/, 'supercars_v8'],
+    [/classic|vintage|historic|_60s|_70s/, 'vintage'],
+  ];
+  for (const [re, cls] of rules) {
+    if (re.test(id) && CLASS_KNOWLEDGE[cls]) return cls;
+  }
+  return null;
+}
+
+function getClassKnowledge(cls) {
+  return cls ? (CLASS_KNOWLEDGE[cls] || null) : null;
+}
+
 const COACH_SYSTEM_PROMPT = `You are an expert motorsport driving coach specialising in data-driven lap analysis.
 You receive telemetry data captured from Assetto Corsa at 10 Hz and produce precise,
 actionable coaching for an amateur driver. You do not give generic advice — every
@@ -1002,10 +1063,20 @@ function handleCoach(url, res) {
   };
 
   const trackKnowledge = getTrackKnowledge(track);
-  const userContent = (trackKnowledge ? trackKnowledge + '\n\n' : '') +
+
+  const carId = (capturedLaps.find(l => l.car) || {}).car || '';
+  const carClass = detectCarClass(carId, cfg);
+  const classKnowledge = getClassKnowledge(carClass);
+  const classBlock = classKnowledge
+    ? `DRIVER'S CAR CLASS: ${carClass.toUpperCase()} (car: ${carId})\n${classKnowledge}`
+    : (carId ? `DRIVER'S CAR: ${carId} — class not auto-detected; infer the class from the car and tailor the coaching to its braking, downforce and traction characteristics.` : '');
+
+  const userContent =
+    (trackKnowledge ? trackKnowledge + '\n\n' : '') +
+    (classBlock ? classBlock + '\n\n' : '') +
     buildCoachMessage(track, capturedLaps, sectorData);
 
-  console.log(`\n🎓 Coach [${cfg.mode}]: track="${track}" laps=${capturedLaps.length} msg=${userContent.length} chars`);
+  console.log(`\n🎓 Coach [${cfg.mode}]: track="${track}" class="${carClass || '?'}" laps=${capturedLaps.length} msg=${userContent.length} chars`);
 
   const done = (err, report) => {
     if (err) {

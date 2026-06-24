@@ -1,0 +1,17 @@
+CAR CLASS: TCR (Front-Wheel-Drive Touring)
+Profile: ~1200 kg, ~340 bhp, FWD, sequential gearbox, modest downforce, road-derived tyres.
+
+BRAKING:
+- Front weight bias + FWD: heavy braking loads the front. Trail braking aids rotation, but too much locks the inside front.
+- Left-foot braking is common to settle the car and reduce lift-off understeer.
+
+THROTTLE:
+- FWD means power understeer: early or aggressive throttle washes the front wide on exit. Be patient — straighten the car, THEN accelerate.
+- A tighter line and using kerbs keeps exits straight for early-but-clean throttle.
+
+HANDLING:
+- Lift-off oversteer rotates the car on entry — use it deliberately, but it bites if abrupt.
+- Brake-induced rotation beats steering input for getting the nose in.
+
+COMMON MISTAKES: power understeer from early throttle; too much entry speed washing the front out; over-slowing then being unable to rotate.
+COACHING FOCUS: trail/left-foot braking to rotate, patient throttle to beat understeer, straighten before power.

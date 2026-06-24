@@ -1,0 +1,17 @@
+CAR CLASS: GT3
+Profile: ~1300 kg, 500–600 bhp, slick tyres, ABS + traction control, moderate-high downforce.
+
+BRAKING:
+- ABS-equipped: brake hard and late, but ABS kicking in early just scrubs speed — aim for threshold pressure just below ABS activation.
+- Trail-brake into medium/slow corners to rotate the car; GT3s push wide on entry if you release the brake too early.
+
+THROTTLE:
+- TC lets you get to power early, but flooring it mid-corner triggers TC and bogs the exit — feed throttle progressively from the apex.
+- Short-shift out of slow corners to keep the car settled and avoid TC cuts.
+
+BALANCE / TYRES:
+- Heavy car: manage front tyre temps; smooth inputs and trail braking prevent front graining and understeer.
+- Understeer-biased by design — rotate with the brakes and patience, not more steering lock.
+
+COMMON MISTAKES: braking too early (ABS safety net unused); too much steering angle causing understeer; early full throttle triggering TC.
+COACHING FOCUS: late threshold braking, trail-brake rotation, progressive throttle out of slow corners.

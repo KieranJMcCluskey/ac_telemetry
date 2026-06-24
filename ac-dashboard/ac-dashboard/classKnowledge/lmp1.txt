@@ -1,0 +1,16 @@
+CAR CLASS: LMP1 (Le Mans Prototype)
+Profile: ~900 kg, 900+ bhp hybrid, enormous downforce, closed cockpit, slicks, carbon brakes.
+
+BRAKING:
+- Even more downforce than F1 in fast sections. Carbon brakes — late, hard, then modulate pressure as speed and downforce fall.
+- Hybrid energy recovery under braking shifts brake feel/balance — stay smooth.
+
+THROTTLE:
+- Big aero grip and often 4WD hybrid deployment: traction is strong, so you can deploy early in medium/fast corners.
+- Slow corners are still traction-limited — progressive throttle.
+
+DOWNFORCE:
+- Fast corners are astonishingly quick; commitment is everything. An unnecessary lift in a high-speed corner loses huge time.
+
+COMMON MISTAKES: not trusting the aero in fast corners; braking too early; abrupt inputs upsetting the hybrid/brake balance.
+COACHING FOCUS: commit in high-speed aero corners, late modulated braking, smoothness to keep the hybrid/brake balance stable.
