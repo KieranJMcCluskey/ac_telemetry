@@ -242,3 +242,42 @@ Setup notes for future reference:
 
 Remaining (non-blocking): configure the dashboard on the gaming PC via the ⚙ Settings UI
 with a real account; refund the $5 live test purchase in Stripe.
+
+---
+
+## Installer / Distribution — ✅ LIVE (2026-06-24)
+
+End users install via a hosted web installer — no repo download, no manual script edits.
+
+**Entry points** (served from the marketing site, `www.sugarollymountain.com`):
+- One-click: `https://www.sugarollymountain.com/downloads/ac-telemetry/Install-ACDashboard.bat`
+  (double-click `.bat` → runs PowerShell with `-ExecutionPolicy Bypass`)
+- One-line: `irm https://www.sugarollymountain.com/downloads/ac-telemetry/install.ps1 | iex`
+
+Both URLs verified HTTP 200 live.
+
+**What `install.ps1` does:**
+1. Installs Node.js via `winget` (OpenJS.NodeJS.LTS) if missing.
+2. Downloads the latest app from `github.com/KieranJMcCluskey/ac_telemetry/archive/refs/heads/main.zip`
+   (the `$Ref` variable — switch to a tag to pin a version).
+3. Installs to `%LOCALAPPDATA%\ACDashboard`, preserving an existing `config.json` on update;
+   on a fresh install it seeds `config.json` to token mode pointing at `accoach.netlify.app`.
+4. Creates a `Start-ACDashboard.bat` launcher + Desktop and Start Menu shortcuts.
+
+**Where the files live:**
+| File | Repo / path | Purpose |
+|---|---|---|
+| `install.ps1` | `ac_telemetry/install.ps1` | Canonical source (lives with the app) |
+| `install.ps1` | `sugarollymountain/downloads/ac-telemetry/install.ps1` | **Served copy** — re-copy from canonical if it changes |
+| `Install-ACDashboard.bat` | `sugarollymountain/downloads/ac-telemetry/` | Double-click bootstrapper |
+| AC Telemetry card | `sugarollymountain/apps.html` | Download link swapped from GitHub → installer; copy updated to "Windows App" |
+
+**Notes:**
+- The two `install.ps1` copies are kept in sync manually — editing the canonical one means
+  re-copying to the sugarollymountain repo and redeploying that site.
+- `install.ps1` sets TLS 1.2 explicitly (Windows PowerShell 5.1 needs it for GitHub).
+- The served installer URL only works after the `sugarollymountain` site redeploys; the app
+  download works anytime (public repo).
+
+Remaining: run the one-liner once on the gaming PC to confirm the Windows install end-to-end
+(can't be tested from macOS).
