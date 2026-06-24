@@ -5,6 +5,8 @@ node_modules/
 ac-dashboard/ac-dashboard/config.json
 ac-dashboard/ac-dashboard/captured/
 backend/.env
+backend/.env.*
+!backend/.env.example
 
 # Electron build output
 dist/
@@ -17,3 +19,6 @@ Thumbs.db
 # Logs
 *.log
 npm-debug.log*
+
+# Local Netlify folder
+.netlify

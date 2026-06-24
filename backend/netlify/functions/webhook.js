@@ -25,10 +25,17 @@ exports.handler = async (event) => {
 
   if (stripeEvent.type === 'checkout.session.completed') {
     const session = stripeEvent.data.object;
-    const { user_id, tokens } = session.metadata || {};
+    const { app, user_id, tokens } = session.metadata || {};
+
+    // This Stripe account is shared with another app (who-am-i). Stripe delivers
+    // every checkout.session.completed to both endpoints, so ack-and-ignore any
+    // checkout that isn't ours — otherwise it fails delivery and Stripe retries.
+    if (app !== 'ac-coach') {
+      return { statusCode: 200, body: JSON.stringify({ received: true, ignored: true }) };
+    }
 
     if (!user_id || !tokens) {
-      console.error('Missing metadata in session:', session.id);
+      console.error('Missing metadata in ac-coach session:', session.id);
       return { statusCode: 400, body: 'Missing metadata' };
     }
 

@@ -39,6 +39,7 @@ exports.handler = async (event) => {
     cancel_url: `${origin}/`,
     customer_email: user.email,
     metadata: {
+      app: 'ac-coach',
       user_id: user.id,
       tokens: String(selected.tokens),
     },
