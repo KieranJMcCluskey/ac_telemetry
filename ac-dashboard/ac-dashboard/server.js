@@ -15,7 +15,10 @@ const CTELEMETRY_PATH = process.env.CTELEMETRY_PATH ||
   path.join(process.env.USERPROFILE || process.env.HOME, 'Documents', 'Assetto Corsa', 'ctelemetry');
 
 const PORT = process.env.PORT || 3000;
-const CAPTURE_PATH = path.join(__dirname, 'captured');
+// Captures live OUTSIDE the install dir so they survive app updates, and at a fixed
+// location the AC plugin (ac-plugin/AcDashboard/AcDashboard.py) also writes to.
+const CAPTURE_PATH = process.env.CAPTURE_PATH ||
+  path.join(process.env.USERPROFILE || process.env.HOME, 'Documents', 'AC Dashboard', 'captured');
 const CONFIG_PATH = path.join(__dirname, 'config.json');
 const bus = new EventEmitter();
 

@@ -58,6 +58,33 @@ if (-not $nodeVer) {
     Write-Host "  Node.js $nodeVer found." -ForegroundColor Green
 }
 
+# ── Locate Assetto Corsa (Steam-aware; libraries can be on any drive) ────────
+function Find-AssettoCorsa {
+    $candidates = @()
+    $steam = $null
+    try { $steam = (Get-ItemProperty 'HKCU:\Software\Valve\Steam' -ErrorAction SilentlyContinue).SteamPath } catch {}
+    if (-not $steam) {
+        try { $steam = (Get-ItemProperty 'HKLM:\SOFTWARE\WOW6432Node\Valve\Steam' -ErrorAction SilentlyContinue).InstallPath } catch {}
+    }
+    if ($steam) {
+        $steam = $steam -replace '/', '\'
+        $candidates += (Join-Path $steam 'steamapps\common\assettocorsa')
+        $vdf = Join-Path $steam 'steamapps\libraryfolders.vdf'
+        if (Test-Path $vdf) {
+            foreach ($m in [regex]::Matches((Get-Content $vdf -Raw), '"path"\s+"([^"]+)"')) {
+                $lib = $m.Groups[1].Value -replace '\\\\', '\'
+                $candidates += (Join-Path $lib 'steamapps\common\assettocorsa')
+            }
+        }
+    }
+    $candidates += 'C:\Program Files (x86)\Steam\steamapps\common\assettocorsa'
+    foreach ($c in $candidates) {
+        if (Test-Path (Join-Path $c 'apps\python')) { return $c }
+    }
+    return $null
+}
+$PluginInstalled = $false
+
 # ── 2. Download the latest app from GitHub ──────────────────────────────────
 $tmp = Join-Path $env:TEMP ("acdash_" + [Guid]::NewGuid().ToString('N'))
 New-Item -ItemType Directory -Path $tmp | Out-Null
@@ -100,6 +127,48 @@ try {
             account    = [ordered]@{ email = ''; accessToken = ''; refreshToken = '' }
         } | ConvertTo-Json -Depth 5
         Set-Content $cfgPath $seed -Encoding UTF8
+    }
+
+    # ── 3b. Install the AC telemetry plugin (captures laps for the coach) ────
+    try {
+        $acRoot = Find-AssettoCorsa
+        $pluginSrc = Join-Path $extractedRoot.FullName 'ac-plugin\AcDashboard'
+        if ($acRoot -and (Test-Path (Join-Path $pluginSrc 'AcDashboard.py'))) {
+            $pluginDst = Join-Path $acRoot 'apps\python\AcDashboard'
+            New-Item -ItemType Directory -Force -Path $pluginDst | Out-Null
+            Copy-Item (Join-Path $pluginSrc '*') $pluginDst -Recurse -Force
+            Write-Host "  AC plugin installed: $pluginDst" -ForegroundColor Green
+
+            # Activate it in python.ini (line-by-line, non-destructive to other apps)
+            $iniPath = Join-Path $env:USERPROFILE 'Documents\Assetto Corsa\cfg\python.ini'
+            $iniDir  = Split-Path $iniPath
+            if (-not (Test-Path $iniDir)) { New-Item -ItemType Directory -Force -Path $iniDir | Out-Null }
+
+            $lines = if (Test-Path $iniPath) { @(Get-Content $iniPath) } else { @() }
+            $out = New-Object System.Collections.Generic.List[string]
+            $inSection = $false; $activeSet = $false; $sectionSeen = $false
+            foreach ($line in $lines) {
+                if ($line -match '^\s*\[(.+?)\]\s*$') {
+                    if ($inSection -and -not $activeSet) { $out.Add('ACTIVE=1'); $activeSet = $true }
+                    $inSection = ($Matches[1] -ieq 'ACDASHBOARD')
+                    if ($inSection) { $sectionSeen = $true }
+                    $out.Add($line); continue
+                }
+                if ($inSection -and $line -match '^\s*ACTIVE\s*=') { $out.Add('ACTIVE=1'); $activeSet = $true; continue }
+                $out.Add($line)
+            }
+            if ($inSection -and -not $activeSet) { $out.Add('ACTIVE=1') }
+            if (-not $sectionSeen) { $out.Add('[ACDASHBOARD]'); $out.Add('ACTIVE=1') }
+            # Write without a BOM — a BOM on line 1 breaks AC's parsing of the first app.
+            [System.IO.File]::WriteAllLines($iniPath, $out)
+            Write-Host "  Plugin activated in python.ini." -ForegroundColor Green
+            $PluginInstalled = $true
+        } elseif (-not $acRoot) {
+            Write-Host "  Assetto Corsa not found — skipped the plugin (dashboard still works)." -ForegroundColor Yellow
+        }
+    } catch {
+        Write-Host "  Could not install the AC plugin automatically: $($_.Exception.Message)" -ForegroundColor Yellow
+        Write-Host "  Dashboard still works; close AC and re-run, or see the README for manual steps." -ForegroundColor DarkGray
     }
 }
 finally {
@@ -152,6 +221,17 @@ Write-Host ""
 Write-Host "    • Double-click '$AppName' on your desktop to launch" -ForegroundColor White
 Write-Host "    • Your browser opens at http://localhost:3000" -ForegroundColor White
 Write-Host "    • Click ⚙ (top-right) → Coaching Tokens → Sign In to start coaching" -ForegroundColor White
+if ($PluginInstalled) {
+    Write-Host ""
+    Write-Host "    AC telemetry plugin installed. In Assetto Corsa:" -ForegroundColor White
+    Write-Host "    • Settings → enable Python apps, then add 'AcDashboard' to your HUD" -ForegroundColor White
+    Write-Host "    • Drive laps — completed laps are captured automatically for coaching" -ForegroundColor White
+    Write-Host "    (Restart AC if it was open during install.)" -ForegroundColor DarkGray
+} else {
+    Write-Host ""
+    Write-Host "    NOTE: the AC capture plugin was not installed, so AI coaching has no" -ForegroundColor Yellow
+    Write-Host "    lap data yet. Close Assetto Corsa and re-run this installer to add it." -ForegroundColor Yellow
+}
 Write-Host "  ══════════════════════════════════════════" -ForegroundColor DarkGray
 Write-Host ""
 
