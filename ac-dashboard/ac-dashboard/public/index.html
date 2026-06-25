@@ -799,7 +799,7 @@ body {
               <div class="s-balance" id="tokenBalanceDisplay">–</div>
               <div class="s-balance-label">coaching sessions remaining</div>
             </div>
-            <button class="s-btn s-btn-primary" onclick="openPurchasePage()">Buy More</button>
+            <button class="s-btn s-btn-primary" onclick="openPurchasePage()">Buy Tokens</button>
           </div>
           <hr class="s-divider">
           <button class="s-btn s-btn-danger" onclick="tokenLogout()">Sign Out</button>
@@ -1595,7 +1595,7 @@ async function tokenRegister() {
     });
     const data = await res.json();
     if (!res.ok || data.error) { showSettingsMsg('tokenMsg', 'err', data.error || 'Registration failed.'); return; }
-    showSettingsMsg('tokenMsg', 'ok', 'Account created! Check your email to confirm, then sign in.');
+    showSettingsMsg('tokenMsg', 'ok', 'Account created — you can sign in now.');
   } catch (e) {
     showSettingsMsg('tokenMsg', 'err', 'Network error: ' + e.message);
   }

@@ -39,7 +39,7 @@ exports.handler = async (event) => {
   if (action === 'register') {
     const { error } = await supabase.auth.signUp({ email, password });
     if (error) return json(400, { error: error.message });
-    return json(200, { ok: true, message: 'Check your email to confirm your account.' });
+    return json(200, { ok: true, message: 'Account created — you can sign in now.' });
   }
 
   return json(400, { error: 'action must be "login" or "register"' });
